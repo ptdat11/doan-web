@@ -3,6 +3,7 @@ import { BasePropsPage } from "../../../submodules/base-props/base-props";
 import Header from "../../header/Header";
 import combineClassnames from "../../../submodules/string-processing/combine-classname";
 import { Outlet } from "react-router-dom";
+import { headerHeight } from "../../../variables.css";
 
 interface Props extends BasePropsPage {}
 
@@ -11,13 +12,18 @@ const FullWidthLayout: React.FC<Props> = React.memo((props) => {
 		<div
 			id={props.id}
 			className={combineClassnames(
-					props.className,
-					"w-screen h-screen"
+				props.className,
+				"w-screen h-screen overflow-y-scroll"
 			)}
 			style={{...props.style}}
 		>
-			<Header />
-			<Outlet />
+			<Header className="z-10" />
+			<div
+				className="relative"
+				style={{top: headerHeight}}
+			>
+				<Outlet />
+			</div>
 		</div>
 	);
 });
