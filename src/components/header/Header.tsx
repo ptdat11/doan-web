@@ -115,7 +115,7 @@ const Header: React.FC<Props> = React.memo((props) => {
 							</Button>
 						}
 						<button
-							className="sm:hidden ml-3 p-[0.06rem] bg-white"
+							className="sm:hidden ml-3 p-[0.07rem] bg-white"
 							onClick={() => setExpanded(!expanded)}
 						>
 							<svg 

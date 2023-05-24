@@ -9,37 +9,64 @@ const Banner: React.FC<Props> = React.memo((props) => {
   const [bannerIndex, setBannerIndex] = useState(0);
   const imgRef = useRef<HTMLImageElement>(null);
   const arrowBtnsRef = useRef<HTMLDivElement>(null);
+  const imgContainerRef = useRef<HTMLDivElement>(null);
   let bannerCount = 3;
+  let bannerSrc = `/src/assets/banner/banner-${bannerIndex}.png`;
+
+  const centerImage = () => {
+    if (imgRef.current && imgContainerRef.current) {
+      const img = imgRef.current;
+      const container = imgContainerRef.current;
   
-  const handleResize = () => {
-    if (arrowBtnsRef.current && imgRef.current) {
-      const btns = arrowBtnsRef.current;
-      const container = imgRef.current;
-      
-      btns.style.top = container.offsetHeight / 2 - 10 + "px";
+      img.style.translate = `0px ${(container.clientHeight - img.offsetHeight) / 2}px`
     }
   };
   
+  const handleResize = () => {
+    if (arrowBtnsRef.current && imgContainerRef.current) {
+      const btns = arrowBtnsRef.current;
+      const container = imgContainerRef.current;
+      
+      btns.style.top = (container.clientHeight / 2 - 10) + "px";
+    }
+  };
+
   const toNextBanner = () => {
-    setBannerIndex((bannerIndex + 1) % bannerCount);
+    if (imgRef.current) {
+      imgRef.current.style.opacity = "0.1";
+    }
+    setTimeout(() => 
+      setBannerIndex((bannerIndex + 1) % bannerCount),
+      200
+    );
   };
 
   const toPrevBanner = () => {
     let prev = bannerIndex - 1;
-    setBannerIndex(prev < 0 ? bannerCount - 1 : prev)
+    if (imgRef.current) {
+      imgRef.current.style.opacity = "0";
+    }
+    setTimeout(() =>
+      setBannerIndex(prev < 0 ? bannerCount - 1 : prev),
+      200
+    );
   };
 
-  window.addEventListener("resize", handleResize);
   useEffect(() => {
-    setTimeout(handleResize, 50);
+    window.addEventListener("resize", handleResize);
+    const id = setTimeout(handleResize, 50);
+
+    return () => {
+      clearTimeout(id);
+      window.removeEventListener("resize", handleResize);
+    };
   }, [imgRef.current?.offsetHeight]);
   
   useEffect(() => {
-    imgRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "center"
-    });
+    centerImage();
+    if (imgRef.current) {
+      imgRef.current.style.opacity = "1.0";
+    }
     const id = setTimeout(toNextBanner, 4000);
 
     return () => clearTimeout(id);
@@ -47,14 +74,15 @@ const Banner: React.FC<Props> = React.memo((props) => {
   
   return (
     <div
+      ref={imgContainerRef}
       className={combineClassnames(
         props.className,
       )}
       style={{...props.style}}
-    >
+      >
       <div
         ref={arrowBtnsRef}
-        className="w-full px-2 absolute flex justify-between"
+        className="w-full z-[5] px-2 absolute flex justify-between"
         style={{top: imgRef.current?.offsetHeight as number / 2 + 10}}
       >
         <ArrowButton
@@ -70,18 +98,13 @@ const Banner: React.FC<Props> = React.memo((props) => {
       </div>
 
       <div
-        className="w-full h-full flex overflow-hidden"
+        className="w-full h-full flex"
       >
-        {Array.from({ length: bannerCount }, (_, i) => i).map((index) => {
-          let bannerSrc = `/src/assets/banner/banner-${index}.png`;
-          
-          return <img 
-            ref={bannerIndex === index ? imgRef : undefined}
-            key={index}
-            className="w-full"
-            src={bannerSrc}
-          />
-        })}
+        <img 
+          ref={imgRef}
+          className="w-full h-full duration-200 ease-in"
+          src={bannerSrc}
+        />
       </div>
     </div>
   );
