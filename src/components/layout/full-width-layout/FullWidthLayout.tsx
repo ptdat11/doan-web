@@ -7,19 +7,19 @@ import { Outlet } from "react-router-dom";
 interface Props extends BasePropsPage {}
 
 const FullWidthLayout: React.FC<Props> = React.memo((props) => {
-    return (
-        <div
-            id={props.id}
-            className={combineClassnames(
-                props.className,
-                "w-screen h-screen"
-            )}
-            style={{...props.style}}
-        >
-            <Header />
-            <Outlet />
-        </div>
-    );
+	return (
+		<div
+			id={props.id}
+			className={combineClassnames(
+					props.className,
+					"w-screen h-screen"
+			)}
+			style={{...props.style}}
+		>
+			<Header />
+			<Outlet />
+		</div>
+	);
 });
 
 export default FullWidthLayout;
