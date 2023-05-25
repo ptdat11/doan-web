@@ -27,7 +27,7 @@ const Banner: React.FC<Props> = React.memo((props) => {
       const btns = arrowBtnsRef.current;
       const container = imgContainerRef.current;
       
-      btns.style.top = (container.clientHeight / 2 - 10) + "px";
+      btns.style.top = (container.offsetHeight / 2 + 50) + "px";
     }
   };
 

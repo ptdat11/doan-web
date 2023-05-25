@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { BaseProps } from "../../submodules/base-props/base-props";
 import combineClassnames from "../../submodules/string-processing/combine-classname";
 import { headerHeight } from "../../variables.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { pageState } from "../../states/system-states";
 import SearchBar from "../search-bar/SearchBar";
 import { userState } from "../../states/user-states";
 import Button from "../button/Button";
@@ -15,10 +14,10 @@ import { categorySites } from "../../category-site";
 interface Props extends BaseProps {}
 
 const Header: React.FC<Props> = React.memo((props) => {
-	const [page, setPage] = useRecoilState(pageState);
 	const [expanded, setExpanded] = useState(false);
 	const [searchKey, setSearchKey] = useState("");
-	const [userInfo, setUserInfo] = useRecoilState(userState)
+	const [userInfo, setUserInfo] = useRecoilState(userState);
+	const location = useLocation();
 
 	const handleClickSearch = () => {
 
@@ -32,14 +31,14 @@ const Header: React.FC<Props> = React.memo((props) => {
 		<header
 			className={combineClassnames(
 					props.className,
-					"w-full fixed bg-black items-center"
+					"w-screen fixed bg-black items-center"
 			)}
 			style={{
 				...props.style,
 				height: headerHeight
 			}}
 		>
-			<div className="w-full h-full md:px-4 py-1 px-3 flex justify-between items-center">
+			<div className="w-full h-full md:px-4 py-1 px-3 text-white flex justify-between items-center">
 				<Link
 					className="text-2xl md:text-3xl font-thin"
 					to="/"
@@ -52,10 +51,9 @@ const Header: React.FC<Props> = React.memo((props) => {
 				>
 						<Link
 							className={combineClassnames(
-								page === "home" ? "text-yellow-300" : "",
+								location.pathname === "/" ? "text-yellow-300" : "",
 								"max-sm:hidden font-thin"
 							)}
-							onClick={() => setPage("home")}
 							to="/"
 						>
 							Trang chủ
@@ -65,7 +63,7 @@ const Header: React.FC<Props> = React.memo((props) => {
 							label={
 								<span
 									className={combineClassnames(
-										page === "product" ? "text-yellow-300" : "",
+										location.pathname === "/product" ? "text-yellow-300" : "",
 									)}
 								>
 									Sản phẩm
@@ -87,10 +85,9 @@ const Header: React.FC<Props> = React.memo((props) => {
 						</Dropdown>
 						<Link
 							className={combineClassnames(
-								page === "about" ? "text-yellow-300" : "",
+								location.pathname === "/about" ? "text-yellow-300" : "",
 								"max-sm:hidden font-thin"
 							)}
-							onClick={() => setPage("about")}
 							to="/about"
 						>
 							Giới thiệu
@@ -132,7 +129,7 @@ const Header: React.FC<Props> = React.memo((props) => {
 
 			<div className={combineClassnames(
 				expanded ? "" : "scale-y-0 h-0",
-				"sm:hidden w-full bg-black origin-top duration-100 [&>*]:px-4"
+				"sm:hidden w-full text-white bg-black origin-top duration-100 [&>*]:px-4"
 			)}>
 				<hr />
 				<div className="bg-black p-1">
@@ -147,7 +144,7 @@ const Header: React.FC<Props> = React.memo((props) => {
 				<Hr />
 				<Link
 					className={combineClassnames(
-						page === "home" ? "text-yellow-400" : "",
+						location.pathname === "/" ? "text-yellow-400" : "",
 						"block p-2 font-thin bg-black"
 					)}
 					to="/"
@@ -161,7 +158,7 @@ const Header: React.FC<Props> = React.memo((props) => {
 					label={
 						<div
 							className={combineClassnames(
-								page === "product" ? "text-yellow-300" : "",
+								location.pathname === "/product" ? "text-yellow-300" : "",
 							)}
 						>
 							Sản phẩm
@@ -172,7 +169,7 @@ const Header: React.FC<Props> = React.memo((props) => {
 					{categorySites.map((site, index) => 
 						<div 
 							key={index}
-							className="w-full"
+							className="w-full [&>*]:px-6"
 						>
 							{index > 0 ? <Hr /> : <></>}
 							<Link
@@ -188,7 +185,7 @@ const Header: React.FC<Props> = React.memo((props) => {
 				<Hr />
 				<Link
 					className={combineClassnames(
-						page === "about" ? "text-yellow-400" : "",
+						location.pathname === "/about" ? "text-yellow-400" : "",
 						"block p-2 font-thin bg-black"
 					)}
 					to="/about"

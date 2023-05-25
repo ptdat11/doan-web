@@ -8,18 +8,19 @@ import { headerHeight } from "../../../variables.css";
 interface Props extends BasePropsPage {}
 
 const FullWidthLayout: React.FC<Props> = React.memo((props) => {
+	console.log(document.body.getBoundingClientRect().width)
 	return (
 		<div
 			id={props.id}
 			className={combineClassnames(
 				props.className,
-				"w-screen h-screen overflow-y-scroll"
+				"h-screen w-screen overflow-y-scroll"
 			)}
 			style={{...props.style}}
 		>
 			<Header className="z-10" />
 			<div
-				className="relative"
+				className="w-full relative"
 				style={{top: headerHeight}}
 			>
 				<Outlet />
