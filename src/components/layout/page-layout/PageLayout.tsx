@@ -13,7 +13,7 @@ const PageLayout: React.FC<Props> = React.memo((props) => {
 			id={props.id}
 			className={combineClassnames(
 				props.className,
-				"text-lg flex flex-col"
+				"w-full text-lg flex flex-col"
 			)}
 			style={{
 				...props.style,

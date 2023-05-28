@@ -79,7 +79,7 @@ const Banner: React.FC<Props> = React.memo((props) => {
         props.className,
       )}
       style={{...props.style}}
-      >
+    >
       <div
         ref={arrowBtnsRef}
         className="w-full z-[5] px-2 absolute flex justify-between"

@@ -8,7 +8,6 @@ import { headerHeight } from "../../../variables.css";
 interface Props extends BasePropsPage {}
 
 const FullWidthLayout: React.FC<Props> = React.memo((props) => {
-	console.log(document.body.getBoundingClientRect().width)
 	return (
 		<div
 			id={props.id}
