@@ -13,11 +13,12 @@ const Modal: React.FC<Props> = React.memo((props) => {
     return (
         <AnimatePresence>
         {
-            props.isShowing && <motion.div
+            props.isShowing ?
+            <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.1 }}
+                transition={{ duration: 0 }}
 
                 onClick={props.onClick}
                 className={combineClassnames(
@@ -35,7 +36,8 @@ const Modal: React.FC<Props> = React.memo((props) => {
                 >
                     {props.children}
                 </div>
-            </motion.div>
+            </motion.div> :
+            <></>
         }
         </AnimatePresence>
     );

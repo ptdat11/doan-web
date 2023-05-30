@@ -1,3 +1,3 @@
-type LocalStorageKey = "userid" | "cart" | "jwt";
+type LocalStorageKey = "cart" | "jwt";
 
 export default LocalStorageKey;

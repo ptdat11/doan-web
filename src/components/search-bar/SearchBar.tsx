@@ -5,7 +5,8 @@ import combineClassnames from '../../submodules/string-processing/combine-classn
 interface Props extends BaseProps {
     value?: string | number,
     onChange?: React.ChangeEventHandler<HTMLInputElement>,
-    onClickSearch?: React.MouseEventHandler<HTMLButtonElement>
+    onClickSearch?: React.MouseEventHandler<HTMLButtonElement>,
+	onPressEnter?: () => void
 }
 
 const SearchBar: React.FC<Props> = React.memo((props) =>{
@@ -29,6 +30,10 @@ const SearchBar: React.FC<Props> = React.memo((props) =>{
 				value={props.value}
 				className="bg-white outline-none text-black grow rounded-r-lg min-w-0"
 				onChange={props.onChange}
+				onKeyDown={(e) => {
+					if (e.key === "Enter" && props.onPressEnter)
+						props.onPressEnter();
+				}}
 			/>
 		</div>
 	);

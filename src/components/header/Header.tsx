@@ -13,7 +13,7 @@ const Header: React.FC<Props> = React.memo((props) => {
 	const navigate = useNavigate();
 
 	const handleClickSearch = () => {
-
+		console.log("search");
 	};
 
 	const handleClickSignIn = () => {

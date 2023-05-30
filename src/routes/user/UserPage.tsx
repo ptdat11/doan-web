@@ -3,20 +3,26 @@ import { BasePropsPage } from "../../submodules/base-props/base-props";
 import PageLayout from "../../components/layout/page-layout/PageLayout";
 import combineClassnames from "../../submodules/string-processing/combine-classname";
 import LocalStorage from "../../submodules/local-storage/local-storage";
-import Modal from "../../components/modal/Modal";
-import SignInForm from "../../components/form/SignInForm";
-import SignUpForm from "../../components/form/SignUpForm";
+import SignInForm from "./components/SignInForm";
 import Switch from "../../components/flow-control/switch/Switch";
 import Match from "../../components/flow-control/switch/Match";
+import SignUpForm from "./components/SignUpForm";
+import { JwtTokenPair } from "../../interfaces/api-formats/login";
+import useProfile from "../../hooks/useProfile";
+import useRefreshToken from "../../hooks/useRefreshToken";
 
 type FormTypeValue = "none" | "signin" | "signup";
 
 interface Props extends BasePropsPage {}
 
 const UserPage = React.memo((props: Props) => {
-    let initVal: FormTypeValue = LocalStorage.get<string>("userid") ? "none" : "signin";
+    useRefreshToken();
+    const localJwt = LocalStorage.get<JwtTokenPair>("jwt");
+
+    let initVal: FormTypeValue = localJwt ? "none" : "signin";
     const [formType, setFormType] = useState<FormTypeValue>(initVal);
-    console.log(initVal, "none");
+
+    const profile = useProfile({ token: localJwt?.access })
 
     return (
         <PageLayout
@@ -25,35 +31,29 @@ const UserPage = React.memo((props: Props) => {
                 props.className
             )}
             style={{...props.style}}
-            title="User Profile"
+            title={`Hello ${profile?.name}`}
         >
-            <Modal 
-                isShowing={formType !== "none"} 
-                // onClick={(e) => {
-                //     e.preventDefault();
-                //     setFormType("none");
-                // }}
-            >
-                <Switch>
-                    <Match when={formType === "signin"}>
-                        <SignInForm 
-                            onNavigateSignUp={(e) => {
-                                e.preventDefault();
-                                setFormType("signup");
-                            }}
-                        />
-                    </Match>
+            <Switch>
+                <Match when={formType === "signin"}>
+                    <SignInForm 
+                        isShowing
+                        onNavigateSignUp={(e) => {
+                            e.preventDefault();
+                            setFormType("signup");
+                        }}
+                    />
+                </Match>
 
-                    <Match when={formType === "signup"}>
-                        <SignUpForm 
-                            onNavigateSignIn={(e) => {
-                                e.preventDefault();
-                                setFormType("signin");
-                            }}
-                        />
-                    </Match>
-                </Switch>
-            </Modal>
+                <Match when={formType === "signup"}>
+                    <SignUpForm
+                        isShowing
+                        onNavigateSignIn={(e) => {
+                            e.preventDefault();
+                            setFormType("signin");
+                        }}
+                    />
+                </Match>
+            </Switch>
         </PageLayout>
     );
 });

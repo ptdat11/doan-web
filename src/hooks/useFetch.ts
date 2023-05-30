@@ -27,18 +27,17 @@ const useFetch = <T extends unknown>(params: Params, deps?: React.DependencyList
     useEffect(() => {
         let isCurrent = true;
 
-        jsonFetch(
+        jsonFetch<T>(
             params.url,
             params.method,
             params.data,
             params.headers
         ).
-        then(res => res.json()).
         then(obj => {
             if (isCurrent) {
                 setResult({
                     loading: false,
-                    data: obj,
+                    data: obj.data,
                     errorMessage: null
                 });
             }

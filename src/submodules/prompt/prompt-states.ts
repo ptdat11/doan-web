@@ -1,0 +1,1 @@
+export type PromptState = "error" | "success" | "warning" | "neutral";

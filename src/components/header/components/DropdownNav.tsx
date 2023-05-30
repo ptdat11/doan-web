@@ -10,13 +10,13 @@ import For from "../../flow-control/for/For";
 
 interface Props extends BaseProps {
     onClickSignIn: React.MouseEventHandler<HTMLButtonElement>,
-    closeDropdownFn: React.MouseEventHandler<HTMLAnchorElement>,
+    closeDropdownFn: () => void,
     expanded: boolean
 }
 
 const DropdownNav: React.FC<Props> = React.memo((props) => {
 	const location = useLocation();
-    console.log(location.pathname)
+    
     return (
         <div className={combineClassnames(
             props.expanded ? "" : "scale-y-0 h-0",
@@ -26,7 +26,10 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
             <div className="bg-black p-1">
                 <Button
                     className="w-32 rounded-sm"
-                    onClick={props.onClickSignIn}
+                    onClick={(e) => {
+                        props.onClickSignIn(e);
+                        props.closeDropdownFn();
+                    }}
                 >
                     Đăng nhập
                 </Button>

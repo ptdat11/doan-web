@@ -13,7 +13,7 @@ import { useRecoilState } from "recoil";
 import { userState } from "../../../states/user-states";
 
 interface Props extends BaseProps {
-    onClickSearch: React.MouseEventHandler<HTMLButtonElement>,
+    onClickSearch: () => void,
     onClickSignIn: React.MouseEventHandler<HTMLButtonElement>,
     onClickExpand: React.MouseEventHandler<HTMLButtonElement>
     expanded: boolean
@@ -79,6 +79,9 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
                 value={searchKey}
                 onChange={(e) => setSearchKey(e.target.value)}
                 onClickSearch={props.onClickSearch}
+                onPressEnter={() => {
+                    props.onClickSearch();
+                }}
             />
 
             <Show

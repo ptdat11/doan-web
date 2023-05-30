@@ -11,7 +11,6 @@ const Banner: React.FC<Props> = React.memo((props) => {
   const arrowBtnsRef = useRef<HTMLDivElement>(null);
   const imgContainerRef = useRef<HTMLDivElement>(null);
   let bannerCount = 3;
-  let bannerSrc = `/src/assets/banner/banner-${bannerIndex}.png`;
 
   const centerImage = () => {
     if (imgRef.current && imgContainerRef.current) {
@@ -53,17 +52,20 @@ const Banner: React.FC<Props> = React.memo((props) => {
   };
 
   useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    const id = setTimeout(handleResize, 50);
+    let observer = new ResizeObserver(() => {
+      handleResize();
+      centerImage();
+    });
+    if (imgRef.current)
+      observer.observe(imgRef.current);
 
     return () => {
-      clearTimeout(id);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [imgRef.current?.offsetHeight]);
-  
+      if (imgRef.current)
+        observer.unobserve(imgRef.current);
+    }
+  });
+
   useEffect(() => {
-    centerImage();
     if (imgRef.current) {
       imgRef.current.style.opacity = "1.0";
     }
@@ -103,7 +105,8 @@ const Banner: React.FC<Props> = React.memo((props) => {
         <img 
           ref={imgRef}
           className="w-full h-full duration-200 ease-in"
-          src={bannerSrc}
+          src={`/src/assets/banner/banner-${bannerIndex}.png`}
+          onResize={handleResize}
         />
       </div>
     </div>

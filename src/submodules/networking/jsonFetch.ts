@@ -1,10 +1,12 @@
 export type APIMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
-export const jsonFetch = async (
+
+export const jsonFetch = async <T extends unknown> (
     url: string,
     method?: APIMethod,
     data?: any,
     headers?: HeadersInit
-): Promise<Response> => {
+) => {
+
     url = url.endsWith("/") ? url : url + '/';
     let trueUrl = url + ((method === "GET" && data != undefined && data != null) ?
         `?${new URLSearchParams(data).toString()}` :
@@ -22,7 +24,12 @@ export const jsonFetch = async (
         body: (method !== "GET") ? JSON.stringify(data) : undefined,
         mode: "cors",
         credentials: "same-origin"
-    })
+    });
 
-    return response;
+    let result = {
+        status: response.status,
+        data: (await response.json()) as T
+    };
+
+    return result;
 }
