@@ -9,25 +9,27 @@ import { categorySites } from "../../../category-site";
 import SearchBar from "../../search-bar/SearchBar";
 import Show from "../../flow-control/if/Show";
 import Button from "../../button/Button";
-import { useRecoilState } from "recoil";
-import { userState } from "../../../states/user-states";
+import useRefreshToken from "../../../hooks/useRefreshToken";
+import DefaultAvatar from "../../avatar/DefaultAvatar";
+import LocalStorage from "../../../submodules/local-storage/local-storage";
 
 interface Props extends BaseProps {
     onClickSearch: () => void,
     onClickSignIn: React.MouseEventHandler<HTMLButtonElement>,
-    onClickExpand: React.MouseEventHandler<HTMLButtonElement>
-    expanded: boolean
 }
 
 const FullWidthNav: React.FC<Props> = React.memo((props) => {
     const [searchKey, setSearchKey] = useState("");
-	const [userInfo, setUserInfo] = useRecoilState(userState);
     const location = useLocation();
+    let accessToken = useRefreshToken();
+
+    const handleSignOut = () => {
+        LocalStorage.remove("jwt");
+        window.location.reload();
+    }
 
     return (
-        <nav
-            className="w-8/12 justify-end sm:w-9/12 lg:w-7/12 h-3/5 flex sm:justify-between items-center text-base md:text-lg text-white"
-        >
+        <>
             <Link
                 className={combineClassnames(
                     location.pathname === "/" ? "text-yellow-300" : "",
@@ -39,6 +41,8 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
             </Link>
             <Dropdown
                 className="max-sm:hidden font-light bg-black"
+                showCaret
+                align="center"
                 label={
                     <span
                         className={combineClassnames(
@@ -85,8 +89,35 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
             />
 
             <Show
-                when={!userInfo}
-                fallback={<img />}
+                when={!accessToken}
+                fallback={
+                    <Dropdown
+                        className="bg-black"
+                        label={
+                            <DefaultAvatar
+                                className="cursor-pointer"
+                                onClick={(e) => e.stopPropagation()}
+                                size={30} 
+                            />
+                        }
+                        align="left"
+                    >
+                        <div className="[&>*]:block p-1">
+                            <Link
+                                className="py-2 font-light"
+                                to="/user"
+                            >
+                                Trang cá nhân
+                            </Link>
+                            <Button 
+                                className="ml-auto py-2"
+                                onClick={handleSignOut}    
+                            >
+                                Đăng xuất
+                            </Button>
+                        </div>
+                    </Dropdown>
+                }
             >
                 <Button
                     className="max-sm:hidden"
@@ -96,8 +127,8 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
                 </Button>
             </Show>
             
-            <button
-                className="sm:hidden ml-3 p-[0.07rem] bg-white"
+            {/* <button
+                className="sm:hidden p-[0.07rem] bg-white"
                 onClick={props.onClickExpand}
             >
                 <svg 
@@ -106,10 +137,10 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
                         props.expanded ? "rotate-180" : ""
                     )} width="24" height="24" viewBox="0 0 24 24"
                 >
-                        <path xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" d="M6.29289 8.79289C6.68342 8.40237 7.31658 8.40237 7.70711 8.79289L12 13.0858L16.2929 8.79289C16.6834 8.40237 17.3166 8.40237 17.7071 8.79289C18.0976 9.18342 18.0976 9.81658 17.7071 10.2071L12.7071 15.2071C12.3166 15.5976 11.6834 15.5976 11.2929 15.2071L6.29289 10.2071C5.90237 9.81658 5.90237 9.18342 6.29289 8.79289Z" />
+                    <path xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" d="M6.29289 8.79289C6.68342 8.40237 7.31658 8.40237 7.70711 8.79289L12 13.0858L16.2929 8.79289C16.6834 8.40237 17.3166 8.40237 17.7071 8.79289C18.0976 9.18342 18.0976 9.81658 17.7071 10.2071L12.7071 15.2071C12.3166 15.5976 11.6834 15.5976 11.2929 15.2071L6.29289 10.2071C5.90237 9.81658 5.90237 9.18342 6.29289 8.79289Z" />
                 </svg>
-            </button>
-    </nav>
+            </button> */}
+        </>
     );
 });
 

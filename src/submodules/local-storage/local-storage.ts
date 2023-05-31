@@ -26,6 +26,10 @@ class LocalStorage {
 
         localStorage[key] = JSON.stringify(value);
     }
+
+    static remove(key: LocalStorageKey) {
+        localStorage.removeItem(key);
+    }
 }
 
 export default LocalStorage;

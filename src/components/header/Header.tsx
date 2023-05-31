@@ -5,11 +5,11 @@ import { headerHeight } from "../../variables.css";
 import { Link, useNavigate } from "react-router-dom";
 import FullWidthNav from "./components/FullWidthNav";
 import DropdownNav from "./components/DropdownNav";
+import Dropdown from "../dropdown/Dropdown";
 
 interface Props extends BaseProps {}
 
 const Header: React.FC<Props> = React.memo((props) => {
-	const [expanded, setExpanded] = useState(false);
 	const navigate = useNavigate();
 
 	const handleClickSearch = () => {
@@ -23,38 +23,39 @@ const Header: React.FC<Props> = React.memo((props) => {
 	return (
 		<header
 			className={combineClassnames(
-					props.className,
-					"w-screen fixed bg-black items-center"
+				props.className,
+				"w-screen fixed bg-black md:px-4 py-1 px-3 pr-0 text-white flex justify-between items-center"
 			)}
 			style={{
 				...props.style,
 				height: headerHeight
 			}}
 		>
-			<div className="w-full h-full md:px-4 py-1 px-3 text-white flex justify-between items-center">
-				<Link
-					className="text-2xl md:text-3xl font-thin"
-					to="/"
-				>
-					MILANO
-				</Link>
+			<Link
+				className="text-2xl md:text-3xl font-normal hover:text-inherit"
+				to="/"
+			>
+				MILANO
+			</Link>
 
+			<nav className="grow-0 flex w-8/12 sm:w-9/12 lg:w-7/12 h-3/5 sm:pr-3 justify-between items-center text-base md:text-lg text-white">
 				<FullWidthNav 
 					onClickSearch={handleClickSearch}
-					onClickExpand={(e) => {
-						e.preventDefault();
-						setExpanded(!expanded);
-					}}
 					onClickSignIn={handleClickSignIn}
-					expanded={expanded}
 				/>
-			</div>
 
-			<DropdownNav 
-				onClickSignIn={handleClickSignIn}
-				closeDropdownFn={() => setExpanded(false)}
-				expanded={expanded}
-			/>	
+				<Dropdown
+					className="sm:hidden h-full flex justify-center relative pr-6 bg-black"
+					showCaret
+					align="left"
+					top={headerHeight / 9}
+				>
+					<DropdownNav 
+						// className="absolute left-0 "
+						onClickSignIn={handleClickSignIn}
+					/>
+				</Dropdown>
+			</nav>
 		</header>
 	);
 });

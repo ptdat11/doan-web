@@ -2,6 +2,11 @@ import React, { useState, useRef,useEffect } from "react";
 import { BaseProps } from "../../submodules/base-props/base-props";
 import combineClassnames from "../../submodules/string-processing/combine-classname";
 import ArrowButton from "../button/ArrowButton";
+import banner0 from "../../assets/banner/banner-0.png";
+import banner1 from "../../assets/banner/banner-1.png";
+import banner2 from "../../assets/banner/banner-2.png";
+
+const bannerSrc = [banner0, banner1, banner2];
 
 interface Props extends BaseProps {}
 
@@ -10,7 +15,7 @@ const Banner: React.FC<Props> = React.memo((props) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const arrowBtnsRef = useRef<HTMLDivElement>(null);
   const imgContainerRef = useRef<HTMLDivElement>(null);
-  let bannerCount = 3;
+  let bannerCount = bannerSrc.length;
 
   const centerImage = () => {
     if (imgRef.current && imgContainerRef.current) {
@@ -105,7 +110,7 @@ const Banner: React.FC<Props> = React.memo((props) => {
         <img 
           ref={imgRef}
           className="w-full h-full duration-200 ease-in"
-          src={`/src/assets/banner/banner-${bannerIndex}.png`}
+          src={bannerSrc[bannerIndex]}
           onResize={handleResize}
         />
       </div>

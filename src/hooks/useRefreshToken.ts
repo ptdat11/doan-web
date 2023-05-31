@@ -3,38 +3,49 @@ import { JwtTokenPair } from "../interfaces/api-formats/login";
 import { JWT } from "../submodules/jwt/jwt";
 import LocalStorage from "../submodules/local-storage/local-storage";
 import { apiUrlSelector } from "../states/system-states";
-import { jsonFetch } from "../submodules/networking/jsonFetch";
 import useFetch from "./useFetch";
+import { CustomJWT } from "../submodules/jwt/jwt-interface";
+import { jsonFetch } from "../submodules/networking/jsonFetch";
+import { useState } from "react";
 
 const useRefreshToken = (): string | undefined => {
+    const [newAccess, setNewAccess] = useState("");
     const refreshApiUrl = useRecoilValue(apiUrlSelector("token/refresh"));
-    const localJWT = LocalStorage.get<JwtTokenPair>("jwt");
-    if (!localJWT) {
+    const localJwt = LocalStorage.get<JwtTokenPair>("jwt");
+    if (!localJwt) {
         return undefined;
     }
 
-    const [access, expired] = JWT.parse(localJWT.access);
-    if (!expired) {
-        return localJWT.access;
+    if (localJwt.access) {
+        let access = JWT.parse(localJwt.access);
+        if (!access.expired) {
+            return localJwt.access;
+        }
+    }
+    if (localJwt.refresh) {
+        let refresh = JWT.parse(localJwt.refresh);
+        if (refresh.expired) {
+            return undefined;
+        }
     }
 
     const refreshData = {
-        refresh: localJWT.refresh
+        refresh: localJwt.refresh
     };
-    const response = useFetch<{ access: string }>({
-        url: refreshApiUrl,
-        method: "POST",
-        data: refreshData,
-        headers: {
-            "Authorization": "Bearer " + localJWT.access
-        }
-    }, []);
-    LocalStorage.set("jwt", {
-        ...localJWT,
-        access: response.data?.access
-    })
+    jsonFetch<{ access: string }>(
+        refreshApiUrl,"POST",
+        refreshData, {
+            "Authorization": "Bearer " + localJwt.access
+    }).then(response => { 
+        const newJwt = {
+            refresh: localJwt.refresh,
+            access: response.data.access
+        }        
+        LocalStorage.set("jwt", newJwt);
+        setNewAccess(newJwt.access);
+    });
 
-    return response.data?.access;
+    return newAccess;
 };
 
 export default useRefreshToken;

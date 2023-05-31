@@ -1,7 +1,7 @@
 import { JWTType } from "./jwt-interface";
 
 export class JWT {
-    static parse <T extends JWTType>(token: string): [T, boolean | undefined] {
+    static parse <T extends JWTType>(token: string): { payload: T, expired?: boolean } {
         let base64Url = token.split('.')[1];
         let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         let jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
@@ -13,10 +13,13 @@ export class JWT {
             new Date(parsed.exp * 1000) :
             undefined;
         
-        let expired: boolean | undefined = expireDate ?
+        let exp: boolean | undefined = expireDate ?
             expireDate < new Date() :
             undefined;
         
-        return [parsed, expired];
+        return {
+            payload: parsed,
+            expired: exp
+        };
     }
 }

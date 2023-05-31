@@ -22,8 +22,7 @@ const UserPage = React.memo((props: Props) => {
     let initVal: FormTypeValue = localJwt ? "none" : "signin";
     const [formType, setFormType] = useState<FormTypeValue>(initVal);
 
-    const profile = useProfile({ token: localJwt?.access })
-
+    const profile = useProfile({ token: localJwt?.access });
     return (
         <PageLayout
             id={props.id}

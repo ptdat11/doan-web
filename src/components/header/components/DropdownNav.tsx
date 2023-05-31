@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { BaseProps } from "../../../submodules/base-props/base-props";
 import combineClassnames from "../../../submodules/string-processing/combine-classname";
 import Button from "../../button/Button";
@@ -7,33 +7,39 @@ import { Link, useLocation } from "react-router-dom";
 import Dropdown from "../../dropdown/Dropdown";
 import { categorySites } from "../../../category-site";
 import For from "../../flow-control/for/For";
+import useRefreshToken from "../../../hooks/useRefreshToken";
+import Show from "../../flow-control/if/Show";
 
 interface Props extends BaseProps {
     onClickSignIn: React.MouseEventHandler<HTMLButtonElement>,
-    closeDropdownFn: () => void,
-    expanded: boolean
 }
 
 const DropdownNav: React.FC<Props> = React.memo((props) => {
 	const location = useLocation();
+    const accessToken = useRefreshToken();
+    const containerRef = useRef<HTMLDivElement>(null);
     
     return (
-        <div className={combineClassnames(
-            props.expanded ? "" : "scale-y-0 h-0",
-            "sm:hidden w-full text-white bg-black origin-top duration-100 [&>*]:px-4"
-        )}>
-            <hr />
-            <div className="bg-black p-1">
-                <Button
-                    className="w-32 rounded-sm"
-                    onClick={(e) => {
-                        props.onClickSignIn(e);
-                        props.closeDropdownFn();
-                    }}
-                >
-                    Đăng nhập
-                </Button>
-            </div>
+        <div 
+            ref={containerRef}
+            className={combineClassnames(
+                props.className,
+                "sm:hidden w-screen text-white bg-black origin-top duration-100 [&>*]:px-4"
+            )}
+            style={{...props.style}}
+        >
+            <Show when={!accessToken}>
+                <div className="bg-black p-1">
+                    <Button
+                        className="w-32 rounded-sm"
+                        onClick={(e) => {
+                            props.onClickSignIn(e);
+                        }}
+                    >
+                        Đăng nhập
+                    </Button>
+                </div>
+            </Show>
 
             <Hr />
             <Link
@@ -41,7 +47,6 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
                     location.pathname === "/" ? "text-yellow-400" : "",
                     "block p-2 font-thin bg-black"
                 )}
-                onClick={props.closeDropdownFn}
                 to="/"
             >
                 Trang chủ
@@ -59,8 +64,9 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
                         Sản phẩm
                     </div>
                 }
-                width="w-full"
+                align="right"
             >
+                <Hr />
                 <For each={categorySites}>
                     {(site, index) => 
                     <div 
@@ -69,9 +75,8 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
                     >
                         {index > 0 ? <Hr /> : <></>}
                         <Link
-                            className="block p-2"
+                            className="w-screen block p-2"
                             to={site.path}
-                            onClick={props.closeDropdownFn}
                         >
                             {site.name}
                         </Link>
@@ -86,7 +91,6 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
                     location.pathname === "/about" ? "text-yellow-400" : "",
                     "block p-2 font-thin bg-black"
                 )}
-                onClick={props.closeDropdownFn}
                 to="/about"
             >
                 Giới thiệu

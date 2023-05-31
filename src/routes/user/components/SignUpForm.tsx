@@ -7,6 +7,8 @@ import { apiUrlSelector } from "../../../states/system-states";
 import { jsonFetch } from "../../../submodules/networking/jsonFetch";
 import { InputPromptInfo } from "../../../submodules/prompt/prompt-info";
 import useSignIn from "../../../hooks/useSignIn";
+import LocalStorage from "../../../submodules/local-storage/local-storage";
+import { JwtTokenPair } from "../../../interfaces/api-formats/login";
 
 interface Props extends BaseProps {
     isShowing?: boolean,
@@ -14,7 +16,7 @@ interface Props extends BaseProps {
 }
 
 const SignUpForm: React.FC<Props> = React.memo((props) => {
-    const [customer, setCustomer] = useState({
+    const [user, setCustomer] = useState({
         username: "",
         email: "abc@gmail.com",
         password: "",
@@ -24,6 +26,8 @@ const SignUpForm: React.FC<Props> = React.memo((props) => {
     const [address, setAddress] = useState("VN");
 
     const registerApiUrl = useRecoilValue(apiUrlSelector("register"));
+    const loginApiUrl = useRecoilValue(apiUrlSelector("login"));
+    const validateUsernameApiUrl = useRecoilValue(apiUrlSelector("validate-username"))
     const signInCallback = useSignIn();
 
     const [usernamePrompt, setUsernamePrompt] = useState<InputPromptInfo>({
@@ -43,33 +47,61 @@ const SignUpForm: React.FC<Props> = React.memo((props) => {
         content: undefined
     })
 
-    const handleUsernameBlur = () => {
-
+    const handleUsernameBlur = async () => {
+        if (user.username === "")
+            return;
+        
+        const validateData = {
+            username: user.username
+        }
+        const response = await jsonFetch(validateUsernameApiUrl, "POST", validateData);
+        console.log(response);
     };
 
     const handleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        if (Object.values(customer).includes("") || []) {
+        setUsernamePrompt({ state: "neutral", content: undefined });
+        setNamePrompt({ state: "neutral", content: undefined });
+        setPasswordPrompt({ state: "neutral", content: undefined });
+        setPhoneNumberPrompt({ state: "neutral", content: undefined });
 
+        if (Object.values(user).includes("")) {
+            if (user.username === "")
+                setUsernamePrompt({ state: "error", content: "Hãy nhập tên đăng nhập" });
+            if (user.password === "")
+                setPasswordPrompt({ state: "error", content: "Hãy nhập mật khẩu" });
+            if (name === "")
+                setNamePrompt({ state: "error", content: "Hãy nhập tên người dùng" });
+            if (phoneNumber === "")
+                setPhoneNumberPrompt({ state: "error", content: "Hãy nhập số điện thoại" });
+            return;
         }
 
         const data: registerPOST = {
-            user: customer,
+            user: user,
             name: name,
             phone_number: phoneNumber,
             address: address
         }
 
         let response = await jsonFetch(registerApiUrl, "POST", data);
-        if (response.status !== 201) {
-            return;
+        switch (response.status) {
+            case 201:
+                break;
+            default:
+                setUsernamePrompt({ state: "error", content: undefined });
+                setNamePrompt({ state: "error", content: undefined });
+                setPasswordPrompt({ state: "error", content: undefined });
+                setPhoneNumberPrompt({ state: "error", content: "Đã xảy ra lỗi" });
+                return;
         }
 
-        await signInCallback({
-            username: customer.username,
-            password: customer.password
+        const jwtLogin = await jsonFetch<JwtTokenPair>(loginApiUrl, "POST", {
+            username: user.username,
+            password: user.password
         });
 
+        LocalStorage.set("jwt", jwtLogin.data);
         window.location.reload();
     };
 
@@ -80,14 +112,15 @@ const SignUpForm: React.FC<Props> = React.memo((props) => {
             textFields={[
                 { 
                     label: "Tên đăng nhập",
-                    value: customer.username,
+                    value: user.username,
                     prompt: usernamePrompt,
-                    onChange: (e) => setCustomer({ ...customer, username: e.target.value }),
+                    onChange: (e) => setCustomer({ ...user, username: e.target.value }),
                     onBlur: handleUsernameBlur,
                 },
                 {
                     label: "Họ tên",
                     value: name,
+                    prompt: namePrompt,
                     onChange: (e) => setName(e.target.value)
                 },
                 // {
@@ -99,12 +132,14 @@ const SignUpForm: React.FC<Props> = React.memo((props) => {
                 {
                     label: "Mật khẩu",
                     type: "password",
-                    value: customer.password,
-                    onChange: (e) => setCustomer({ ...customer, password: e.target.value })
+                    value: user.password,
+                    prompt: passwordPrompt,
+                    onChange: (e) => setCustomer({ ...user, password: e.target.value })
                 },
                 {
                     label: "Số điện thoại",
                     value: phoneNumber,
+                    prompt: phoneNumberPrompt,
                     onChange: (e) => setPhoneNumber(e.target.value )
                 },
                 // {

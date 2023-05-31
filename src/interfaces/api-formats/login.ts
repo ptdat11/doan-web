@@ -4,6 +4,6 @@ export interface loginPOST {
 };
 
 export interface JwtTokenPair { 
-    refresh: string,
-    access: string
+    refresh?: string,
+    access?: string
 };

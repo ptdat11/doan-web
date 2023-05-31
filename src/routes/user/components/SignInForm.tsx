@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { BaseProps } from "../../../submodules/base-props/base-props";
 import ModalForm from "../../../components/form/ModalForm";
-import useSignIn from "../../../hooks/useSignIn";
+import { InputPromptInfo } from "../../../submodules/prompt/prompt-info";
+import { useRecoilValue } from "recoil";
+import { apiUrlSelector } from "../../../states/system-states";
+import { jsonFetch } from "../../../submodules/networking/jsonFetch";
+import { JwtTokenPair } from "../../../interfaces/api-formats/login";
+import LocalStorage from "../../../submodules/local-storage/local-storage";
 
 interface Props extends BaseProps {
     isShowing?: boolean,
@@ -9,24 +14,55 @@ interface Props extends BaseProps {
 }
 
 const SignInForm: React.FC<Props> = React.memo((props) => {
-    const [customer, setCustomer] = useState({
+    const [user, setUser] = useState({
         username: "",
         password: ""
     });
-    const signInCallback = useSignIn();
+    const loginApiUrl = useRecoilValue(apiUrlSelector("login"));
+    const [usernamePrompt, setUsernamePrompt] = useState<InputPromptInfo>({
+        state: "neutral",
+        content: undefined
+    });
+    const [passwordPrompt, setPasswordPrompt] = useState<InputPromptInfo>({
+        state: "neutral",
+        content: undefined
+    });
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = async(e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.code === "Enter") {
-            handleSignIn();
+            await handleSignIn();
             e.currentTarget.blur();
         }
     };
 
     const handleSignIn = async (e?: React.MouseEvent<HTMLButtonElement>) => {
         e?.preventDefault();
-        await signInCallback(customer);
+        setUsernamePrompt({ state: "neutral", content: undefined });
+        setPasswordPrompt({ state: "neutral", content: undefined });
 
-        window.location.reload();
+        if (Object.values(user).includes("")) {
+            if (user.username === "")
+                setUsernamePrompt({ state: "error", content: "Hãy nhập username" });
+            if (user.password === "")
+                setPasswordPrompt({ state: "error", content: "Hãy nhập mật khẩu"});
+            return;
+        }
+
+        const response = await jsonFetch<JwtTokenPair>(loginApiUrl, "POST", user);
+
+        switch (response.status) {
+            case 400:
+                setUsernamePrompt({ state: "error", content: undefined });
+                setPasswordPrompt({ state: "error", content: "Tên đăng nhập hoặc mật khẩu chưa đúng"});
+                break;
+            case 200:
+                LocalStorage.set("jwt", response.data);
+                window.location.reload();
+                break;
+            default:
+                setUsernamePrompt({ state: "error", content: undefined });
+                setPasswordPrompt({ state: "error", content: "Đã xảy ra lỗi" });
+        }
     };
 
     return (
@@ -36,15 +72,17 @@ const SignInForm: React.FC<Props> = React.memo((props) => {
             textFields={[
                 {
                     label: "Tên đăng nhập",
-                    value: customer.username,
-                    onChange: (e) => setCustomer({ ...customer, username: e.target.value })
+                    value: user.username,
+                    prompt: usernamePrompt,
+                    onChange: (e) => setUser({ ...user, username: e.target.value })
                 },
                 {
                     label: "Mật khẩu",
                     type: "password",
-                    value: customer.password,
+                    value: user.password,
+                    prompt: passwordPrompt,
                     onKeyDown: handleKeyDown,
-                    onChange: (e) => setCustomer({ ...customer, password: e.target.value})
+                    onChange: (e) => setUser({ ...user, password: e.target.value})
                 }
             ]}
             button={{
@@ -63,7 +101,7 @@ const SignInForm: React.FC<Props> = React.memo((props) => {
                     </a>
                 </>
             }
-        />
+        /> // End ModalForm
     );
 });
 

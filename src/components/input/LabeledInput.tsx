@@ -1,8 +1,6 @@
-import React, { HTMLInputTypeAttribute } from "react";
+import React, { HTMLInputTypeAttribute, useRef } from "react";
 import { BaseProps } from "../../submodules/base-props/base-props";
 import combineClassnames from "../../submodules/string-processing/combine-classname";
-import Switch from "../flow-control/switch/Switch";
-import Match from "../flow-control/switch/Match";
 import { InputPromptInfo } from "../../submodules/prompt/prompt-info";
 
 export interface LabeledInputProps extends BaseProps {
@@ -17,6 +15,7 @@ export interface LabeledInputProps extends BaseProps {
 }
 
 const LabeledInput: React.FC<LabeledInputProps> = React.memo((props) => {
+    const inputRef = useRef<HTMLInputElement>(null);
     let borderColor: string = "";
     let promptColor: string = "";
 
@@ -38,13 +37,17 @@ const LabeledInput: React.FC<LabeledInputProps> = React.memo((props) => {
     return (
         <label
             className={combineClassnames(
-                props.className
+                props.className,
             )}
-            style={{...props.style}}
+            style={{
+                ...props.style,
+                maxWidth: inputRef.current ? inputRef.current.offsetWidth : undefined
+            }}
         >
             {props.label}
             <br />
             <input 
+                ref={inputRef}
                 className={combineClassnames(
                     props.inputClassName,
                     borderColor,
@@ -56,8 +59,11 @@ const LabeledInput: React.FC<LabeledInputProps> = React.memo((props) => {
                 onChange={props.onChange}
                 onBlur={props.onBlur}
             />
-
-            <span className={promptColor}>{props.prompt?.content}</span>
+            <br />
+            <span className={combineClassnames(
+                promptColor,
+                "break-words"
+            )}>{props.prompt?.content}</span>
         </label>
     );
 });
