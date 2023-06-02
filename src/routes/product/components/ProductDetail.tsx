@@ -1,21 +1,54 @@
 import React, { useState } from "react";
 import { BaseProps } from "../../../submodules/base-props/base-props";
 import { productGET } from "../../../interfaces/api-formats/product";
-import { imgUrl } from "../../../states/system-states";
+import { apiUrlSelector, imgUrl } from "../../../states/system-states";
 import RatingLine from "../../../components/product/RatingLine";
 import Hr from "../../../components/hr/Hr";
 import Button from "../../../components/button/Button";
 import combineClassnames from "../../../submodules/string-processing/combine-classname";
+import { useRecoilValue } from "recoil";
+import { jsonFetch } from "../../../submodules/networking/jsonFetch";
+import { cartAddPOST } from "../../../interfaces/api-formats/cart-add";
+import useRefreshToken from "../../../hooks/useRefreshToken";
+import SuccessIcon from "../../../components/status-icon/SuccessIcon";
+import ErrorIcon from "../../../components/status-icon/ErrorIcon";
+import WarningIcon from "../../../components/status-icon/WarningIcon";
+import Switch from "../../../components/flow-control/switch/Switch";
+import Match from "../../../components/flow-control/switch/Match";
+import { PromptState } from "../../../submodules/prompt/prompt-states";
 
 interface Props extends BaseProps {
-    product?: productGET | null
+    product?: productGET | null,
+    id: number
 }
 
 const ProductDetail: React.FC<Props> = React.memo((props) => {
     const [amount, setAmount] = useState(1);
+    const [cartStatus, setCartStatus] = useState<PromptState>("neutral");
+    const cartAddApiUrl = useRecoilValue(apiUrlSelector("cart/add"));
+    let accessToken = useRefreshToken();
 
-    const handleClickAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleClickAddToCart = async () => {
+        const cartAddData: cartAddPOST = {
+            product_id: props.id,
+            quantity: amount
+        };
 
+        const response = await jsonFetch(
+            cartAddApiUrl, 
+            "POST", 
+            cartAddData,
+            {
+                "Authorization": "Bearer " + accessToken
+            }
+        );
+        switch (response.status) {
+            case 200:
+                setCartStatus("success");
+                break;
+            default:
+                setCartStatus("error");
+        }
     };
 
     return (
@@ -86,10 +119,36 @@ const ProductDetail: React.FC<Props> = React.memo((props) => {
                         >
                             Thêm vào giỏ hàng
                         </Button>
+
                     </div>
-                </div>
-            </div>
-        </div>  
+                    <div
+                        className={combineClassnames(
+                            "ml-2"
+                        )}
+                    >
+                        <Switch>
+                            <Match when={cartStatus === "error"}>
+                                <span className="text-[#c70039] flex items-center">
+                                <ErrorIcon size={30} />
+                                Đã có lỗi xảy ra
+                                </span>
+                            </Match>
+                            
+                            <Match when={cartStatus === "success"}>
+                                <span className="text-[#50c878] flex items-center">
+                                <SuccessIcon size={30} />
+                                Đã thêm vào giỏ hàng
+                                </span>
+                            </Match>
+
+                            <Match when={cartStatus === "warning"}>
+                                <WarningIcon size={30} />
+                            </Match>
+                        </Switch>
+                    </div>
+                </div> {/* End of detail */}
+            </div> {/* End of right hand container */}
+        </div>
     );
 });
 

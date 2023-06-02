@@ -30,7 +30,7 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
 	const categories = useFetch<categoriesGET[]>({
 		url: categoriesApiUrl,
 		method: "GET"
-	});
+	}, []);
 
     const handleSignOut = () => {
         LocalStorage.remove("jwt");
@@ -72,7 +72,7 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
                             // to={site.path}
                             className="block px-1 py-2 font-light"
                         >
-                            asd
+                           {site.name} 
                         </Link>
                     </div>
                     }

@@ -9,6 +9,10 @@ import { categorySites } from "../../../category-site";
 import For from "../../flow-control/for/For";
 import useRefreshToken from "../../../hooks/useRefreshToken";
 import Show from "../../flow-control/if/Show";
+import { useRecoilValue } from "recoil";
+import { apiUrlSelector } from "../../../states/system-states";
+import { categoriesGET } from "../../../interfaces/api-formats/categories";
+import useFetch from "../../../hooks/useFetch";
 
 interface Props extends BaseProps {
     onClickSignIn: React.MouseEventHandler<HTMLButtonElement>,
@@ -18,6 +22,11 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
 	const location = useLocation();
     const accessToken = useRefreshToken();
     const containerRef = useRef<HTMLDivElement>(null);
+    const categoriesApiUrl = useRecoilValue(apiUrlSelector("categories"));
+	const categories = useFetch<categoriesGET[]>({
+		url: categoriesApiUrl,
+		method: "GET"
+	}, []);
     
     return (
         <div 
@@ -67,7 +76,7 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
                 align="right"
             >
                 <Hr />
-                <For each={categorySites}>
+                <For each={categories.data}>
                     {(site, index) => 
                     <div 
                         key={index}
@@ -76,7 +85,7 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
                         {index > 0 ? <Hr /> : <></>}
                         <Link
                             className="w-screen block p-2"
-                            to={site.path}
+                            to={site.name}
                         >
                             {site.name}
                         </Link>

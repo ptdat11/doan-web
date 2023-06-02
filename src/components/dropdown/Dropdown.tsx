@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { BaseProps } from "../../submodules/base-props/base-props";
 import combineClassnames from "../../submodules/string-processing/combine-classname";
-import Show from "../flow-control/if/Show";
 
 interface Props extends BaseProps {
 	label?: React.ReactNode,

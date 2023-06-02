@@ -6,7 +6,7 @@ export const urlPrefixState = atom<string>({
     // default: "http://127.0.0.1:4000"
 });
 
-export type MilanoAPI = "register" | "login" | "token/refresh" | "profile" | "validate-username" | "products" | "product" | "categories";
+export type MilanoAPI = "register" | "login" | "token/refresh" | "profile" | "validate-username" | "products" | "product" | "categories" | "cart/add";
 export const apiUrlSelector = selectorFamily({
     key: "SYSTEM_API_URL",
     get: (api: MilanoAPI) => ({ get }) => {

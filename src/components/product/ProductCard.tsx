@@ -57,7 +57,7 @@ const ProductCard: React.FC<Props> = React.memo((props) => {
             >
                 <div
                     ref={imgRef}
-                    className="overflow-hidden h-[40%] sm:h-[60%]"
+                    className="overflow-hidden h-[50%] sm:h-[60%]"
                 >
                     <img 
                         className="w-full"

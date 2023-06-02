@@ -25,9 +25,6 @@ const ProductPage = React.memo((props: Props) => {
         url: `${productApiUrl}/${id}/`,
         method: "GET"
     }, [id]);
-    let starSize = window.innerHeight / 40;
-
-    
 
     return (
         <PageLayout
@@ -50,6 +47,7 @@ const ProductPage = React.memo((props: Props) => {
                     >
                         <ProductDetail
                             product={product.data}
+                            id={id}
                         />             
                     </Show>
                 </Match>
