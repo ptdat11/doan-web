@@ -7,13 +7,16 @@ interface Props {
 };
 
 const Switch: React.FC<Props> = React.memo((props) => {
+    const first = props.children.findIndex(child => child.type === Match &&
+            child.props.when
+        );
     return (
         <>
-            {props.children.
-                filter(child => 
-                    child.type === Match && 
-                    child.props.when
-            )}
+            {
+                first === -1 ?
+                <></> :
+                props.children[first]
+            }
         </>
     )
 });

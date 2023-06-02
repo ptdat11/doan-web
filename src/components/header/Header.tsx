@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BaseProps } from "../../submodules/base-props/base-props";
 import combineClassnames from "../../submodules/string-processing/combine-classname";
 import { headerHeight } from "../../variables.css";
@@ -11,6 +11,7 @@ interface Props extends BaseProps {}
 
 const Header: React.FC<Props> = React.memo((props) => {
 	const navigate = useNavigate();
+	
 
 	const handleClickSearch = () => {
 		console.log("search");

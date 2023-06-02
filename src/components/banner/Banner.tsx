@@ -111,6 +111,7 @@ const Banner: React.FC<Props> = React.memo((props) => {
           ref={imgRef}
           className="w-full h-full duration-200 ease-in"
           src={bannerSrc[bannerIndex]}
+          alt="milano-banner"
           onResize={handleResize}
         />
       </div>

@@ -1,16 +1,36 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { BasePropsPage } from "../../submodules/base-props/base-props";
 import Banner from '../../components/banner/Banner';
 import PageLayout from '../../components/layout/page-layout/PageLayout';
 import combineClassnames from '../../submodules/string-processing/combine-classname';
 import Footer from '../../components/footer/Footer';
-import ErrorBoundary from '../../components/flow-control/error-boundary/ErrorBoundary';
+import ProductCard from '../../components/product/ProductCard';
+import For from '../../components/flow-control/for/For';
+import ProductLayout from '../../components/layout/product-layout/ProductLayout';
+import { useRecoilValue } from 'recoil';
+import { apiUrlSelector } from '../../states/system-states';
+import useFetch from '../../hooks/useFetch';
+import { productsGET } from '../../interfaces/api-formats/products';
+import { shuffle } from '../../submodules/array-processing/shuffle';
 import Switch from '../../components/flow-control/switch/Switch';
 import Match from '../../components/flow-control/switch/Match';
+import ErrorPrompt from '../../components/error/ErrorPrompt';
+import ProductList from '../../components/product/ProductList';
 
 interface Props extends BasePropsPage {}
 
 const HomePage = React.memo((props: Props) => {
+  const productsApiUrl = useRecoilValue(apiUrlSelector("products"));
+  const productsRes = useFetch<productsGET[]>({
+    url: productsApiUrl,
+    method: "GET"
+  }, []);
+
+  const products = useMemo(() => {
+    if (productsRes.data)
+      return shuffle(productsRes.data);
+    return undefined;
+  }, [productsRes.data]);
 
   return (
     <PageLayout
@@ -22,8 +42,12 @@ const HomePage = React.memo((props: Props) => {
       style={{...props.style}}
     >      
       <Banner className="w-full max-h-[70vh] mb-14 overflow-hidden" />
+      
+      <ProductList 
+        className="my-2"
+        products={products} 
+      />
 
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
       <Footer className="flex flex-col justify-between p-3 text-center text-sm font-thin">
         <h2 className="font-normal text-base font">MILANO SHOP</h2>
         <p className="italic">

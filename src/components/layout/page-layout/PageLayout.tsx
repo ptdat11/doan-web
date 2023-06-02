@@ -4,7 +4,8 @@ import combineClassnames from "../../../submodules/string-processing/combine-cla
 import { headerHeight } from "../../../variables.css";
 
 interface Props extends BasePropsPage {
-    title?: string
+    title?: string,
+	backgroundColor?: string
 }
 
 const PageLayout: React.FC<Props> = React.memo((props) => {
@@ -17,10 +18,11 @@ const PageLayout: React.FC<Props> = React.memo((props) => {
 			)}
 			style={{
 				...props.style,
-				minHeight: window.innerHeight - headerHeight
+				minHeight: window.innerHeight - headerHeight,
+				backgroundColor: props.backgroundColor
 			}}
 		>
-			<h1 className="h-16 text-2xl p-3 px-5">{props.title}</h1>
+			<h1 className="min-h-[4rem] text-2xl p-3 px-5 font-medium">{props.title}</h1>
 			{props.children}
 		</div>
 	)

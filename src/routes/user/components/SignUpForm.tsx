@@ -6,7 +6,6 @@ import { useRecoilValue } from "recoil";
 import { apiUrlSelector } from "../../../states/system-states";
 import { jsonFetch } from "../../../submodules/networking/jsonFetch";
 import { InputPromptInfo } from "../../../submodules/prompt/prompt-info";
-import useSignIn from "../../../hooks/useSignIn";
 import LocalStorage from "../../../submodules/local-storage/local-storage";
 import { JwtTokenPair } from "../../../interfaces/api-formats/login";
 
@@ -28,7 +27,6 @@ const SignUpForm: React.FC<Props> = React.memo((props) => {
     const registerApiUrl = useRecoilValue(apiUrlSelector("register"));
     const loginApiUrl = useRecoilValue(apiUrlSelector("login"));
     const validateUsernameApiUrl = useRecoilValue(apiUrlSelector("validate-username"))
-    const signInCallback = useSignIn();
 
     const [usernamePrompt, setUsernamePrompt] = useState<InputPromptInfo>({
         state: "neutral",

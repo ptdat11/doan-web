@@ -12,6 +12,10 @@ import Button from "../../button/Button";
 import useRefreshToken from "../../../hooks/useRefreshToken";
 import DefaultAvatar from "../../avatar/DefaultAvatar";
 import LocalStorage from "../../../submodules/local-storage/local-storage";
+import { useRecoilValue } from "recoil";
+import useFetch from "../../../hooks/useFetch";
+import { categoriesGET } from "../../../interfaces/api-formats/categories";
+import { apiUrlSelector } from "../../../states/system-states";
 
 interface Props extends BaseProps {
     onClickSearch: () => void,
@@ -22,6 +26,11 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
     const [searchKey, setSearchKey] = useState("");
     const location = useLocation();
     let accessToken = useRefreshToken();
+    const categoriesApiUrl = useRecoilValue(apiUrlSelector("categories"));
+	const categories = useFetch<categoriesGET[]>({
+		url: categoriesApiUrl,
+		method: "GET"
+	});
 
     const handleSignOut = () => {
         LocalStorage.remove("jwt");
@@ -54,15 +63,16 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
                 }
                 width="w-max"
             >
-                <For each={categorySites}>
+                <For each={categories.data}>
                     {(site, index) => 
                     <div key={index}>
                         {index > 0 ? <Hr /> : <></>}
                         <Link
-                            to={site.path}
+                            to=""
+                            // to={site.path}
                             className="block px-1 py-2 font-light"
                         >
-                            {site.name}
+                            asd
                         </Link>
                     </div>
                     }
@@ -126,20 +136,6 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
                     Đăng nhập
                 </Button>
             </Show>
-            
-            {/* <button
-                className="sm:hidden p-[0.07rem] bg-white"
-                onClick={props.onClickExpand}
-            >
-                <svg 
-                    className={combineClassnames(
-                        "duration-200",
-                        props.expanded ? "rotate-180" : ""
-                    )} width="24" height="24" viewBox="0 0 24 24"
-                >
-                    <path xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" d="M6.29289 8.79289C6.68342 8.40237 7.31658 8.40237 7.70711 8.79289L12 13.0858L16.2929 8.79289C16.6834 8.40237 17.3166 8.40237 17.7071 8.79289C18.0976 9.18342 18.0976 9.81658 17.7071 10.2071L12.7071 15.2071C12.3166 15.5976 11.6834 15.5976 11.2929 15.2071L6.29289 10.2071C5.90237 9.81658 5.90237 9.18342 6.29289 8.79289Z" />
-                </svg>
-            </button> */}
         </>
     );
 });
