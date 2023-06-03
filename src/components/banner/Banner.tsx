@@ -90,7 +90,7 @@ const Banner: React.FC<Props> = React.memo((props) => {
       <div
         ref={arrowBtnsRef}
         className="w-full z-[5] px-2 absolute flex justify-between"
-        style={{top: imgRef.current?.offsetHeight as number / 2 + 10}}
+        style={{top: imgRef.current ? imgRef.current.offsetHeight / 2 + 10 : 10}}
       >
         <ArrowButton
           direction="left"

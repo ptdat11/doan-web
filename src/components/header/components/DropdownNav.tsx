@@ -13,6 +13,9 @@ import { useRecoilValue } from "recoil";
 import { apiUrlSelector } from "../../../states/system-states";
 import { categoriesGET } from "../../../interfaces/api-formats/categories";
 import useFetch from "../../../hooks/useFetch";
+import Switch from "../../flow-control/switch/Switch";
+import Match from "../../flow-control/switch/Match";
+import CartIcon from "../../icon/CartIcon";
 
 interface Props extends BaseProps {
     onClickSignIn: React.MouseEventHandler<HTMLButtonElement>,
@@ -27,6 +30,8 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
 		url: categoriesApiUrl,
 		method: "GET"
 	}, []);
+
+    console.log(!!accessToken);
     
     return (
         <div 
@@ -37,8 +42,17 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
             )}
             style={{...props.style}}
         >
-            <Show when={!accessToken}>
-                <div className="bg-black p-1">
+            <div className="bg-black p-1">
+                <Switch>
+                <Match when={!!accessToken}>
+                    <Link to="/cart">
+                        <Button className="px-4">
+                            <CartIcon size={20} /> Giỏ hàng
+                        </Button>
+                    </Link>
+                </Match>
+
+                <Match when={!accessToken}>
                     <Button
                         className="w-32 rounded-sm"
                         onClick={(e) => {
@@ -47,8 +61,9 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
                     >
                         Đăng nhập
                     </Button>
-                </div>
-            </Show>
+                </Match>
+                </Switch>
+            </div>
 
             <Hr />
             <Link
@@ -85,7 +100,10 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
                         {index > 0 ? <Hr /> : <></>}
                         <Link
                             className="w-screen block p-2"
-                            to={site.name}
+                            to={{
+                                pathname: "/search",
+                                search: `?category=${site.name}`
+                            }}
                         >
                             {site.name}
                         </Link>

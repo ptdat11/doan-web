@@ -21,7 +21,7 @@ export const jsonFetch = async <T extends unknown> (
             "Connection": "keep-alive",
             ...headers
         },
-        body: (method !== "GET") ? JSON.stringify(data) : undefined,
+        body: (method !== "GET" && data) ? JSON.stringify(data) : undefined,
         mode: "cors",
         credentials: "same-origin"
     });

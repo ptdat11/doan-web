@@ -57,7 +57,7 @@ const ProductCard: React.FC<Props> = React.memo((props) => {
             >
                 <div
                     ref={imgRef}
-                    className="overflow-hidden h-[50%] sm:h-[60%]"
+                    className="overflow-hidden h-[60%]"
                 >
                     <img 
                         className="w-full"
@@ -66,7 +66,9 @@ const ProductCard: React.FC<Props> = React.memo((props) => {
                     />
                 </div>
                 <figcaption className="grow">
-                    <p className="font-bold sm:text-xl hover:text-[#646cff]">{props.name}</p>
+                    <p className="font-bold text-sm sm:text-xl hover:text-[#646cff]">
+                        {props.name}
+                    </p>
                     <RatingLine 
                         className="w-1/2 mb-2"
                         score={props.rating} 

@@ -3,6 +3,7 @@ import { BaseProps } from "../../submodules/base-props/base-props";
 import combineClassnames from "../../submodules/string-processing/combine-classname";
 
 interface Props extends BaseProps {
+	itemClassName?: string,
 	label?: React.ReactNode,
 	width?: "w-full" | "w-max",
 	showCaret?: boolean,
@@ -17,11 +18,20 @@ const Dropdown: React.FC<Props> = React.memo((props) => {
 	let top = props.top ? props.top : 0;
 
 	useEffect(() => {
-		if (props.align === "center" && itemRef.current && containerRef.current) {
-			const item = itemRef.current;
-			const container = containerRef.current;
+		const observer = new ResizeObserver((entry) => {
+			if (props.align === "center" && itemRef.current && containerRef.current) {
+				const item = itemRef.current;
+	
+				item.style.left = (entry[0].contentRect.width - item.offsetWidth) / 2 + "px";
+			}
+		});
 
-			item.style.left = (container.offsetWidth - item.offsetWidth) / 2 + "px";
+		if (itemRef.current)
+			observer.observe(itemRef.current);
+		
+		return () => {
+			if (itemRef.current)
+				observer.unobserve(itemRef.current);
 		}
 	}, []);
 
@@ -76,6 +86,7 @@ const Dropdown: React.FC<Props> = React.memo((props) => {
 			<div 
 				ref={itemRef}
 				className={combineClassnames(
+					props.itemClassName,
 					expanded ? "" : "scale-y-0 h-0",
 					props.align === "left" ? "right-0" : (props.align === "right" ? "left-0" : undefined),
 					props.width,

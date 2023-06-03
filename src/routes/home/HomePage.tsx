@@ -4,17 +4,11 @@ import Banner from '../../components/banner/Banner';
 import PageLayout from '../../components/layout/page-layout/PageLayout';
 import combineClassnames from '../../submodules/string-processing/combine-classname';
 import Footer from '../../components/footer/Footer';
-import ProductCard from '../../components/product/ProductCard';
-import For from '../../components/flow-control/for/For';
-import ProductLayout from '../../components/layout/product-layout/ProductLayout';
 import { useRecoilValue } from 'recoil';
 import { apiUrlSelector } from '../../states/system-states';
 import useFetch from '../../hooks/useFetch';
 import { productsGET } from '../../interfaces/api-formats/products';
 import { shuffle } from '../../submodules/array-processing/shuffle';
-import Switch from '../../components/flow-control/switch/Switch';
-import Match from '../../components/flow-control/switch/Match';
-import ErrorPrompt from '../../components/error/ErrorPrompt';
 import ProductList from '../../components/product/ProductList';
 
 interface Props extends BasePropsPage {}

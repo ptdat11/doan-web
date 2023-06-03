@@ -5,7 +5,6 @@ import Dropdown from "../../dropdown/Dropdown";
 import combineClassnames from "../../../submodules/string-processing/combine-classname";
 import For from "../../flow-control/for/For";
 import Hr from "../../hr/Hr";
-import { categorySites } from "../../../category-site";
 import SearchBar from "../../search-bar/SearchBar";
 import Show from "../../flow-control/if/Show";
 import Button from "../../button/Button";
@@ -16,6 +15,8 @@ import { useRecoilValue } from "recoil";
 import useFetch from "../../../hooks/useFetch";
 import { categoriesGET } from "../../../interfaces/api-formats/categories";
 import { apiUrlSelector } from "../../../states/system-states";
+import useProfile from "../../../hooks/useProfile";
+import CartIcon from "../../icon/CartIcon";
 
 interface Props extends BaseProps {
     onClickSearch: () => void,
@@ -31,6 +32,7 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
 		url: categoriesApiUrl,
 		method: "GET"
 	}, []);
+    const profile = useProfile();
 
     const handleSignOut = () => {
         LocalStorage.remove("jwt");
@@ -68,8 +70,10 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
                     <div key={index}>
                         {index > 0 ? <Hr /> : <></>}
                         <Link
-                            to=""
-                            // to={site.path}
+                            to={{
+                                pathname: "/search",
+                                search: `?category=${site.name}`
+                            }}
                             className="block px-1 py-2 font-light"
                         >
                            {site.name} 
@@ -99,42 +103,57 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
             />
 
             <Show
-                when={!accessToken}
+                when={!!accessToken}
                 fallback={
-                    <Dropdown
-                        className="bg-black"
-                        label={
-                            <DefaultAvatar
-                                className="cursor-pointer"
-                                onClick={(e) => e.stopPropagation()}
-                                size={30} 
-                            />
-                        }
-                        align="left"
+                    <Button
+                        className="max-sm:hidden"
+                        onClick={props.onClickSignIn}
                     >
-                        <div className="[&>*]:block p-1">
-                            <Link
-                                className="py-2 font-light"
-                                to="/user"
-                            >
-                                Trang cá nhân
-                            </Link>
-                            <Button 
-                                className="ml-auto py-2"
-                                onClick={handleSignOut}    
-                            >
-                                Đăng xuất
-                            </Button>
-                        </div>
-                    </Dropdown>
+                        Đăng nhập
+                    </Button>
                 }
             >
-                <Button
-                    className="max-sm:hidden"
-                    onClick={props.onClickSignIn}
+                <>
+                <Link
+                    to="/cart"
                 >
-                    Đăng nhập
-                </Button>
+                    <Button 
+                        className="max-sm:hidden px-4"
+                    >
+                       <CartIcon size={20} /> 
+                    </Button>
+                </Link>
+                <Dropdown
+                    className="bg-black"
+                    itemClassName="p-1 [&>*]:block"
+                    label={
+                        <DefaultAvatar
+                            className="cursor-pointer"
+                            onClick={(e) => e.stopPropagation()}
+                            size={30} 
+                        />
+                    }
+                    align="left"
+                >
+                    <Link
+                        className="py-2 font-light hover:text-[#747bff]"
+                        to="/user"
+                    >
+                        <div className="font-bold">
+                            {profile?.name}
+                        </div>
+                        <div>
+                            @{profile?.user?.username}
+                        </div>
+                    </Link>
+                    <Button 
+                        className="mx-auto py-2"
+                        onClick={handleSignOut}    
+                    >
+                        Đăng xuất
+                    </Button>
+                </Dropdown>
+                </>
             </Show>
         </>
     );

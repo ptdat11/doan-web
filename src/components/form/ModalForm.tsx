@@ -14,12 +14,14 @@ interface Props extends BaseProps {
         onClick?: React.MouseEventHandler<HTMLButtonElement>,
     },
     smallBottomInfo?: JSX.Element
+    onClick?: React.MouseEventHandler<HTMLDivElement>
 };
 
 const ModalForm: React.FC<Props> = React.memo((props) => {
     return (
         <Modal
             isShowing={props.isShowing}      
+            onClick={props.onClick}
         >
             <form className="px-12 py-4 text-base flex flex-col items-center rounded-lg bg-white">
                 <h2 className="m-2 text-2xl text-center font-semibold">

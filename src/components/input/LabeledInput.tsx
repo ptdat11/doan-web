@@ -8,6 +8,7 @@ export interface LabeledInputProps extends BaseProps {
     inputClassName?: string,
     type?: HTMLInputTypeAttribute,
     value?: string | number | readonly string[],
+    disabled?: boolean,
     prompt?: InputPromptInfo,
     onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>,
     onChange?: React.ChangeEventHandler<HTMLInputElement>,
@@ -55,6 +56,7 @@ const LabeledInput: React.FC<LabeledInputProps> = React.memo((props) => {
                 )}
                 type={props.type}
                 value={props.value}
+                disabled={props.disabled}
                 onKeyDown={props.onKeyDown}
                 onChange={props.onChange}
                 onBlur={props.onBlur}

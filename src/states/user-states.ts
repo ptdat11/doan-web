@@ -1,10 +1,12 @@
 import { atom } from "recoil";
+import { cartGET } from "../interfaces/api-formats/cart";
+import { FetchResult } from "../hooks/useFetch";
 
-export interface CartItem {
-    id: string,
-    quantity: number
-};
-export const cartState = atom<CartItem[]>({
+export const cartState = atom<FetchResult<cartGET[]>>({
     key: "USER_CART",
-    default: []
+    default: {
+        loading: true,
+        data: null,
+        errorMessage: null
+    }
 });

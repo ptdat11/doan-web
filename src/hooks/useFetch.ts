@@ -8,22 +8,19 @@ interface Params {
     headers?: HeadersInit
 };
 
+export interface FetchResult<T extends unknown> {
+    loading: boolean,
+    data: T | null,
+    errorMessage: string | null
+};
 const useFetch = <T extends unknown>(params: Params, deps?: React.DependencyList) => {
-    interface FetchResult {
-        loading: boolean,
-        data: T | null,
-        errorMessage: string | null
-    };
 
-    const [result, setResult] = useState<FetchResult>({
+    const [result, setResult] = useState<FetchResult<T>>({
         loading: true,
         data: null,
         errorMessage: null
     });
 
-    useEffect(() => {
-    }, []);
-    
     useEffect(() => {
         let isCurrent = true;
 

@@ -10,12 +10,14 @@ import { useRecoilValue } from "recoil";
 import { jsonFetch } from "../../../submodules/networking/jsonFetch";
 import { cartAddPOST } from "../../../interfaces/api-formats/cart-add";
 import useRefreshToken from "../../../hooks/useRefreshToken";
-import SuccessIcon from "../../../components/status-icon/SuccessIcon";
-import ErrorIcon from "../../../components/status-icon/ErrorIcon";
-import WarningIcon from "../../../components/status-icon/WarningIcon";
+import SuccessIcon from "../../../components/icon/SuccessIcon";
+import ErrorIcon from "../../../components/icon/ErrorIcon";
 import Switch from "../../../components/flow-control/switch/Switch";
 import Match from "../../../components/flow-control/switch/Match";
 import { PromptState } from "../../../submodules/prompt/prompt-states";
+import { Link } from "react-router-dom";
+import loading from "../../../assets/loading.gif";
+import { refreshToken } from "../../../submodules/networking/refresh-token";
 
 interface Props extends BaseProps {
     product?: productGET | null,
@@ -24,31 +26,35 @@ interface Props extends BaseProps {
 
 const ProductDetail: React.FC<Props> = React.memo((props) => {
     const [amount, setAmount] = useState(1);
-    const [cartStatus, setCartStatus] = useState<PromptState>("neutral");
+    const [cartStatus, setCartStatus] = useState<PromptState>("warning");
     const cartAddApiUrl = useRecoilValue(apiUrlSelector("cart/add"));
     let accessToken = useRefreshToken();
+    const refreshApiUrl = useRecoilValue(apiUrlSelector("token/refresh"));
 
     const handleClickAddToCart = async () => {
+        accessToken = await refreshToken(refreshApiUrl);
         const cartAddData: cartAddPOST = {
             product_id: props.id,
             quantity: amount
         };
 
-        const response = await jsonFetch(
+        setCartStatus("neutral");
+        jsonFetch(
             cartAddApiUrl, 
             "POST", 
             cartAddData,
             {
                 "Authorization": "Bearer " + accessToken
             }
-        );
-        switch (response.status) {
-            case 200:
-                setCartStatus("success");
-                break;
-            default:
-                setCartStatus("error");
-        }
+        ).then(response => {
+            switch (response.status) {
+                case 200:
+                    setCartStatus("success");
+                    break;
+                default:
+                    setCartStatus("error");
+            }
+        })
     };
 
     return (
@@ -129,20 +135,20 @@ const ProductDetail: React.FC<Props> = React.memo((props) => {
                         <Switch>
                             <Match when={cartStatus === "error"}>
                                 <span className="text-[#c70039] flex items-center">
-                                <ErrorIcon size={30} />
+                                <ErrorIcon className="mr-2" size={30} />
                                 Đã có lỗi xảy ra
                                 </span>
                             </Match>
                             
                             <Match when={cartStatus === "success"}>
                                 <span className="text-[#50c878] flex items-center">
-                                <SuccessIcon size={30} />
-                                Đã thêm vào giỏ hàng
+                                <SuccessIcon className="mr-2" size={30} />
+                                Đã thêm vào&nbsp; <Link className="underline hover:text-[#317a49]" to="/cart">giỏ hàng</Link>
                                 </span>
                             </Match>
 
-                            <Match when={cartStatus === "warning"}>
-                                <WarningIcon size={30} />
+                            <Match when={cartStatus === "neutral"}>
+                                <img className="w-[26px] h-[26px] m-2" src={loading}/>
                             </Match>
                         </Switch>
                     </div>

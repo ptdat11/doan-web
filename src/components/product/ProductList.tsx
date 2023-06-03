@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { BaseProps } from "../../submodules/base-props/base-props";
 import Switch from "../flow-control/switch/Switch";
 import Match from "../flow-control/switch/Match";
-import ErrorPrompt from "../error/ErrorPrompt";
 import For from "../flow-control/for/For";
 import ProductCard from "./ProductCard";
 import { productsGET } from "../../interfaces/api-formats/products";
@@ -61,7 +60,7 @@ const ProductList: React.FC<Props> = React.memo((props) => {
                         }
                         </For>
 
-                        <div className="mx-auto col-span-full flex justify-center [&>*]:rounded-sm [&>*]:mx-1 [&>*]:w-[3.7rem]">
+                        <div className="mx-auto my-7 col-span-full flex justify-center [&>*]:rounded-sm [&>*]:mx-1 [&>*]:w-[3.7rem] [&>*]:text-center">
                             <Button
                                 onClick={() => setPage(1)}
                             >
