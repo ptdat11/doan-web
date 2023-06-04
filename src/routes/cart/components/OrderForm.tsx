@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BaseProps } from "../../../submodules/base-props/base-props";
 import ModalForm from "../../../components/form/ModalForm";
 import combineClassnames from "../../../submodules/string-processing/combine-classname";
-import useProfile from "../../../hooks/useProfile";
+import useAuthorizedFetch from "../../../hooks/useAuthorizedFetch";
 
 interface Props extends BaseProps {
     isShowing?: boolean,
@@ -11,7 +11,7 @@ interface Props extends BaseProps {
 };
 
 const OrderForm: React.FC<Props> = React.memo((props) => {
-    const profile = useProfile();
+    const profile = useAuthorizedFetch();
     const [address, setAddress] = useState<string>("");
     useEffect(() => {
         if (profile) {

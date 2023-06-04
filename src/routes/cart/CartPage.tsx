@@ -19,9 +19,9 @@ import loading from "../../assets/loading.gif";
 import Button from "../../components/button/Button";
 import OrderForm from "./components/OrderForm";
 import { refreshToken } from "../../submodules/networking/refresh-token";
-import useProfile from "../../hooks/useProfile";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import { useNavigate } from "react-router-dom";
+import useProfile from "../../hooks/useProfile";
 
 interface Props extends BasePropsPage {}
 
@@ -43,6 +43,7 @@ const CartPage = React.memo((props: Props) => {
     const convertToOrderApiUrl = useRecoilValue(apiUrlSelector("cart/convert-to-order"));
     const [cartStatus, setCartStatus] = useState<PromptState>("neutral");
     const [showingForm, setShowingForm] = useState(false);
+    
     const profile = useProfile();
     
     const [cartDetails, setCartDetails] = useRecoilState(cartState);

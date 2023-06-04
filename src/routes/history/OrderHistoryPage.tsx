@@ -6,37 +6,29 @@ import useRefreshToken from "../../hooks/useRefreshToken";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { apiUrlSelector } from "../../states/system-states";
-import useFetch from "../../hooks/useFetch";
 import { ordersGET } from "../../interfaces/api-formats/orders";
 import For from "../../components/flow-control/for/For";
 import Switch from "../../components/flow-control/switch/Switch";
 import Match from "../../components/flow-control/switch/Match";
-import { refreshToken } from "../../submodules/networking/refresh-token";
 import OrderHistoryRecord from "./components/OrderHistoryRecord";
+import ErrorPrompt from "../../components/error/ErrorPrompt";
+import useAuthorizedFetch from "../../hooks/useAuthorizedFetch";
 
 interface Props extends BasePropsPage {}
 
 const OrderHistoryPage = React.memo((props: Props) => {
+    const access = useRefreshToken();
     const navigate = useNavigate();
-    const refreshApiUrl = useRecoilValue(apiUrlSelector("token/refresh"));
-    const checkLoggedIn = async () => {
-        const accessToken = await refreshToken(refreshApiUrl);
+    if (!access) {
+        navigate("/user");
+    }
 
-        if (!accessToken) {
-            navigate("/user");
-        }
-    };
-    checkLoggedIn();
-
-    const accessToken = useRefreshToken();
     const ordersApiUrl = useRecoilValue(apiUrlSelector("orders"));
-    const orders = useFetch<ordersGET[]>({
+    const orders = useAuthorizedFetch<ordersGET[]>({
         url: ordersApiUrl,
-        method: "GET",
-        headers: {
-            "Authorization": "Bearer " + accessToken
-        }
-    }, []);
+        method: "GET"
+    });
+    
 
     return (
         <PageLayout
@@ -58,10 +50,11 @@ const OrderHistoryPage = React.memo((props: Props) => {
                     </h2>
                 </Match>
 
-                <Match when={true}>
-                    <div className="px-5 lg:px-60 xl:px-96">
+                <Match when={orders.data !== null && "map" in orders.data}>
+                    <div className="px-5 lg:px-60 xl:px-96 [&>*]:mx-auto">
                     <For 
                         each={orders.data}
+                        fallback={<ErrorPrompt className="mx-auto" />}
                     >
                         {(order, index) => 
                         <OrderHistoryRecord

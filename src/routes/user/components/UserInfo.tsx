@@ -2,7 +2,6 @@ import React from "react";
 import { BaseProps } from "../../../submodules/base-props/base-props";
 import DefaultAvatar from "../../../components/avatar/DefaultAvatar";
 import combineClassnames from "../../../submodules/string-processing/combine-classname";
-import useProfile from "../../../hooks/useProfile";
 import Show from "../../../components/flow-control/if/Show";
 import loading from "../../../assets/loading.gif";
 import Hr from "../../../components/hr/Hr";
@@ -12,6 +11,7 @@ import { useRecoilValue } from "recoil";
 import { apiUrlSelector } from "../../../states/system-states";
 import { refreshToken } from "../../../submodules/networking/refresh-token";
 import { Link } from "react-router-dom";
+import useProfile from "../../../hooks/useProfile";
 
 interface Props extends BaseProps {}
 
@@ -38,7 +38,7 @@ const UserInfo: React.FC<Props> = React.memo((props) => {
         <div 
             className={combineClassnames(
                 props.className,
-                "w-full px-5 lg:px-60 xl:px-96"
+                "w-full px-5 lg:px-60 xl:px-96 [&>*]:mx-auto"
             )}
         >
             <div className="w-full flex px-16 py-3 rounded-xl bg-[#dddddd]">

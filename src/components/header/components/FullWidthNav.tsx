@@ -15,8 +15,8 @@ import { useRecoilValue } from "recoil";
 import useFetch from "../../../hooks/useFetch";
 import { categoriesGET } from "../../../interfaces/api-formats/categories";
 import { apiUrlSelector } from "../../../states/system-states";
-import useProfile from "../../../hooks/useProfile";
 import CartIcon from "../../icon/CartIcon";
+import useProfile from "../../../hooks/useProfile";
 
 interface Props extends BaseProps {
     onClickSignIn: React.MouseEventHandler<HTMLButtonElement>,
@@ -32,6 +32,7 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
 		url: categoriesApiUrl,
 		method: "GET"
 	}, []);
+    
     const profile = useProfile();
 
     const handleSignOut = () => {
