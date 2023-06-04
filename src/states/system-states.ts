@@ -14,7 +14,7 @@ export const apiUrlSelector = selectorFamily({
     }
 });
 
-export const cloudImgUrl = "http://res.cloudinary.com/dnlb0stlx/image/upload";
+export const cloudImgUrl = "https://res.cloudinary.com/dnlb0stlx/image/upload";
 export const imgUrl = (imgId: string) => {
     return `${cloudImgUrl}/${imgId}.jpg`;
 }
