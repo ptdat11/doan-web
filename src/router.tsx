@@ -7,6 +7,7 @@ import UserPage from './routes/user/UserPage';
 import ProductPage from './routes/product/ProductPage';
 import CartPage from './routes/cart/CartPage';
 import QueryPage from './routes/query/QueryPage';
+import OrderHistoryPage from './routes/history/OrderHistoryPage';
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: "/search",
         element: <QueryPage id="query"/>
+      },
+      {
+        path: "/history",
+        element: <OrderHistoryPage id="history" />
       }
     ]
   }

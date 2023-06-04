@@ -20,12 +20,24 @@ import Button from "../../components/button/Button";
 import OrderForm from "./components/OrderForm";
 import { refreshToken } from "../../submodules/networking/refresh-token";
 import useProfile from "../../hooks/useProfile";
+import useRefreshToken from "../../hooks/useRefreshToken";
+import { useNavigate } from "react-router-dom";
 
 interface Props extends BasePropsPage {}
 
 const CartPage = React.memo((props: Props) => {
-    let accessToken: string | undefined;
+   const navigate = useNavigate();
     const refreshApiUrl = useRecoilValue(apiUrlSelector("token/refresh"));
+    const checkLoggedIn = async () => {
+        const accessToken = await refreshToken(refreshApiUrl);
+
+        if (!accessToken) {
+            navigate("/user");
+        }
+    };
+    checkLoggedIn();
+
+    let accessToken = useRefreshToken();
     const cartApiUrl = useRecoilValue(apiUrlSelector("cart"));
     const cartRemoveApiUrl = useRecoilValue(apiUrlSelector("remove-from-cart"));
     const convertToOrderApiUrl = useRecoilValue(apiUrlSelector("cart/convert-to-order"));
@@ -186,7 +198,7 @@ const CartPage = React.memo((props: Props) => {
                         </For>
                         <Hr />
                         <div className="mt-8">
-                            <b>Tổng:</b> {details?.total_price.toLocaleString()} VNĐ
+                            <b>Tổng:</b> {details ? details.total_price.toLocaleString() : 0} VNĐ
                         </div>
                     </div>
 

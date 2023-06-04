@@ -5,7 +5,8 @@ interface Params {
     url: string,
     method?: APIMethod,
     data?: any,
-    headers?: HeadersInit
+    headers?: HeadersInit,
+    removeEndSlash?: boolean
 };
 
 export interface FetchResult<T extends unknown> {
@@ -28,7 +29,8 @@ const useFetch = <T extends unknown>(params: Params, deps?: React.DependencyList
             params.url,
             params.method,
             params.data,
-            params.headers
+            params.headers,
+            params.removeEndSlash
         ).
         then(obj => {
             if (isCurrent) {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BaseProps } from "../../../submodules/base-props/base-props";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Dropdown from "../../dropdown/Dropdown";
 import combineClassnames from "../../../submodules/string-processing/combine-classname";
 import For from "../../flow-control/for/For";
@@ -19,7 +19,6 @@ import useProfile from "../../../hooks/useProfile";
 import CartIcon from "../../icon/CartIcon";
 
 interface Props extends BaseProps {
-    onClickSearch: () => void,
     onClickSignIn: React.MouseEventHandler<HTMLButtonElement>,
 }
 
@@ -27,6 +26,7 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
     const [searchKey, setSearchKey] = useState("");
     const location = useLocation();
     let accessToken = useRefreshToken();
+    const navigate = useNavigate();
     const categoriesApiUrl = useRecoilValue(apiUrlSelector("categories"));
 	const categories = useFetch<categoriesGET[]>({
 		url: categoriesApiUrl,
@@ -37,6 +37,13 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
     const handleSignOut = () => {
         LocalStorage.remove("jwt");
         window.location.reload();
+    }
+    
+    const handleSearch = () => {
+        navigate({
+            pathname: "/search",
+            search: `?key=${searchKey}`
+        });
     }
 
     return (
@@ -96,10 +103,8 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
                 className="w-7/12 sm:w-3/12 h-2/3"
                 value={searchKey}
                 onChange={(e) => setSearchKey(e.target.value)}
-                onClickSearch={props.onClickSearch}
-                onPressEnter={() => {
-                    props.onClickSearch();
-                }}
+                onClickSearch={handleSearch}
+                onPressEnter={handleSearch}
             />
 
             <Show
@@ -118,9 +123,10 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
                     to="/cart"
                 >
                     <Button 
-                        className="max-sm:hidden px-4"
+                        className="max-sm:hidden px-4 lg:px-2"
                     >
-                       <CartIcon size={20} /> 
+                       <CartIcon className="lg:mr-2" size={20} /> 
+                       <span className="max-lg:hidden">Giỏ hàng</span>
                     </Button>
                 </Link>
                 <Dropdown
@@ -134,6 +140,7 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
                         />
                     }
                     align="left"
+                    top={15}
                 >
                     <Link
                         className="py-2 font-light hover:text-[#747bff]"

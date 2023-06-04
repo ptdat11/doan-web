@@ -4,10 +4,11 @@ export const jsonFetch = async <T extends unknown> (
     url: string,
     method?: APIMethod,
     data?: any,
-    headers?: HeadersInit
+    headers?: HeadersInit,
+    removeEndSlash?: boolean
 ) => {
 
-    url = url.endsWith("/") ? url : url + '/';
+    url = url.endsWith("/") ? url : url + (removeEndSlash ? "" :  "/");
     let trueUrl = url + ((method === "GET" && data != undefined && data != null) ?
         `?${new URLSearchParams(data).toString()}` :
         ""

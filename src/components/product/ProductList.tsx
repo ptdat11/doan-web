@@ -41,6 +41,12 @@ const ProductList: React.FC<Props> = React.memo((props) => {
                 <Match when={!props.products}>
                     <div className="animate-pulse bg-[#bbbbbb] w-full h-96 my-auto"/>
                 </Match>
+
+                <Match when={props.products?.length === 0} >
+                    <h2 className="text-2xl my-10 font-bold text-center">
+                        Không có sản phẩm nào :/
+                    </h2>
+                </Match>
                 
                 <Match when={true}>
                     <ProductLayout>
@@ -60,16 +66,11 @@ const ProductList: React.FC<Props> = React.memo((props) => {
                         }
                         </For>
 
-                        <div className="mx-auto my-7 col-span-full flex justify-center [&>*]:rounded-sm [&>*]:mx-1 [&>*]:w-[3.7rem] [&>*]:text-center">
+                        <div className="mx-auto my-7 col-span-full flex justify-center [&>*]:rounded-sm [&>*]:mx-1 [&>*]:w-[3.6rem] [&>*]:px-1">
                             <Button
                                 onClick={() => setPage(1)}
                             >
                                 Đầu
-                            </Button>
-                            <Button
-                                onClick={() => setPage(Math.max(page - 1, 1))}
-                            >
-                                {"<"}
                             </Button>
                             <For each={range(minPage, maxPage + 1)}>
                                 {(pageNum, index) => 
@@ -82,11 +83,6 @@ const ProductList: React.FC<Props> = React.memo((props) => {
                                 </Button>
                                 }
                             </For>
-                            <Button
-                                onClick={() => setPage(Math.min(page + 1, maxPossiblePage))}
-                            >
-                                {">"}
-                            </Button>
                             <Button
                                 onClick={() => setPage(maxPossiblePage)}
                             >

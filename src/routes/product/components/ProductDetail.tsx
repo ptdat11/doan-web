@@ -95,7 +95,12 @@ const ProductDetail: React.FC<Props> = React.memo((props) => {
                         {props.product ? (props.product.price * amount).toLocaleString() : 0} VNĐ
                     </p>
 
-                    <div className="flex [&>*]:flex [&>*]:items-center [&>*]:justify-center">
+                    <div 
+                        className={combineClassnames(
+                            accessToken ? undefined : "opacity-70 pointer-events-none",
+                            "flex [&>*]:flex [&>*]:items-center [&>*]:justify-center"
+                        )}
+                    >
                         <Button
                             className="h-8 w-8 rounded-none"
                             onClick={() => setAmount(Math.max(amount - 1, 1))}

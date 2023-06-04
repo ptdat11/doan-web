@@ -31,8 +31,6 @@ const DropdownNav: React.FC<Props> = React.memo((props) => {
 		method: "GET"
 	}, []);
 
-    console.log(!!accessToken);
-    
     return (
         <div 
             ref={containerRef}

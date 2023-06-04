@@ -12,11 +12,6 @@ interface Props extends BaseProps {}
 const Header: React.FC<Props> = React.memo((props) => {
 	const navigate = useNavigate();
 	
-
-	const handleClickSearch = () => {
-		console.log("search");
-	};
-
 	const handleClickSignIn = () => {
 		navigate("/user");
 	};
@@ -39,9 +34,8 @@ const Header: React.FC<Props> = React.memo((props) => {
 				MILANO
 			</Link>
 
-			<nav className="grow-0 flex w-8/12 sm:w-9/12 lg:w-7/12 h-3/5 sm:pr-3 justify-between items-center text-base md:text-lg text-white">
+			<nav className="grow-0 flex w-8/12 sm:w-9/12 lg:w-8/12 xl:w-7/12 h-3/5 sm:pr-3 justify-between items-center text-base md:text-lg text-white">
 				<FullWidthNav 
-					onClickSearch={handleClickSearch}
 					onClickSignIn={handleClickSignIn}
 				/>
 
