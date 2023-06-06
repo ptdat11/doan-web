@@ -41,17 +41,17 @@ const UserInfo: React.FC<Props> = React.memo((props) => {
                 "w-full px-5 lg:px-60 xl:px-96 [&>*]:mx-auto"
             )}
         >
-            <div className="w-full flex px-16 py-3 rounded-xl bg-[#dddddd]">
+            <div className="w-full flex px-5 sm:px-16 py-3 rounded-xl bg-[#dddddd]">
                 <DefaultAvatar size={90} />
                 <Show 
                     when={!!profile}
                     fallback={<img className="h-12 my-auto pl-5" src={loading} />}
                 >
                     <div className="grow px-5 py-2 flex flex-col">
-                        <h2 className="text-3xl font-bold">
+                        <h2 className="text-xl sm:text-3xl font-bold">
                             {profile?.name}
                         </h2>
-                        <p className="my-auto">
+                        <p className="my-auto max-sm:text-lg">
                             {profile?.phone_number}
                         </p>
                     </div>
@@ -61,7 +61,7 @@ const UserInfo: React.FC<Props> = React.memo((props) => {
             <Hr className="my-7"/>
             <Link to="/history">
                 <div 
-                    className="w-full py-3 px-3 text-xl rounded-xl flex items-center justify-between cursor-pointer bg-[#eeeeeecc] hover:bg-[#eeeeee] active:text-[#e42f2f]"
+                    className="w-full py-3 px-3 sm:text-xl rounded-xl flex items-center justify-between cursor-pointer bg-[#eeeeeecc] hover:bg-[#eeeeee] active:text-[#e42f2f]"
                     onClick={handleClickHistory}
                 >
                     Lịch sử mua hàng
