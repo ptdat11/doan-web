@@ -7,6 +7,7 @@ import { apiUrlSelector } from "../../../states/system-states";
 import { jsonFetch } from "../../../submodules/networking/jsonFetch";
 import { JwtTokenPair } from "../../../interfaces/api-formats/login";
 import LocalStorage from "../../../submodules/local-storage/local-storage";
+import Cookies from "js-cookie";
 
 interface Props extends BaseProps {
     isShowing?: boolean,
@@ -56,7 +57,8 @@ const SignInForm: React.FC<Props> = React.memo((props) => {
                 setPasswordPrompt({ state: "error", content: "Tên đăng nhập hoặc mật khẩu chưa đúng"});
                 break;
             case 200:
-                LocalStorage.set("jwt", response.data);
+                Cookies.set("access", response.data.access ?? "");
+                Cookies.set("refresh", response.data.refresh ?? "");
                 window.location.reload();
                 break;
             default:

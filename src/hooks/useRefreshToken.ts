@@ -5,42 +5,46 @@ import LocalStorage from "../submodules/local-storage/local-storage";
 import { apiUrlSelector } from "../states/system-states";
 import { jsonFetch } from "../submodules/networking/jsonFetch";
 import { useState } from "react";
+import Cookies from "js-cookie";
 
 const useRefreshToken = (): string | undefined => {
-    const [newAccess, setNewAccess] = useState("");
+    const [newAccess, setNewAccess] = useState<string | undefined>(undefined);
     const refreshApiUrl = useRecoilValue(apiUrlSelector("token/refresh"));
-    const localJwt = LocalStorage.get<JwtTokenPair>("jwt");
-    if (!localJwt) {
+    const localAccess = Cookies.get("access");
+    const localRefresh = Cookies.get("refresh");
+
+    if (!localRefresh) {
         return undefined;
     }
 
-    if (localJwt.access) {
-        let access = JWT.parse(localJwt.access);
+    if (localAccess) {
+        let access = JWT.parse(localAccess);
         if (!access.expired) {
-            return localJwt.access;
+            return localAccess;
         }
     }
-    if (localJwt.refresh) {
-        let refresh = JWT.parse(localJwt.refresh);
+    if (localRefresh) {
+        let refresh = JWT.parse(localRefresh);
         if (refresh.expired) {
             return undefined;
         }
     }
 
     const refreshData = {
-        refresh: localJwt.refresh
+        refresh: localRefresh
     };
     jsonFetch<{ access: string }>(
         refreshApiUrl,"POST",
         refreshData, {
-            "Authorization": "Bearer " + localJwt.access
+            "Authorization": "Bearer " + localAccess
     }).then(response => { 
-        const newJwt = {
-            refresh: localJwt.refresh,
-            access: response.data.access
-        }        
-        LocalStorage.set("jwt", newJwt);
-        setNewAccess(newJwt.access);
+        // const newJwt = {
+        //     refresh: localRefresh,
+        //     access: response.data.access
+        // }        
+        // LocalStorage.set("jwt", newJwt);
+        Cookies.set("access", response.data.access);
+        setNewAccess(response.data.access);
     });
 
     return newAccess;

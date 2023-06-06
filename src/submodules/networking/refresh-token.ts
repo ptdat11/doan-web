@@ -2,28 +2,31 @@ import { JwtTokenPair } from "../../interfaces/api-formats/login";
 import { JWT } from "../jwt/jwt";
 import LocalStorage from "../local-storage/local-storage";
 import { jsonFetch } from "./jsonFetch";
+import Cookies from "js-cookie";
 
 export const refreshToken = async (refreshUrl: string): Promise<string | undefined> => {
-    const localJwt = LocalStorage.get<JwtTokenPair>("jwt");
-    if (!localJwt) {
+    const localAccess = Cookies.get("access");
+    const localRefresh = Cookies.get("refresh");
+
+    if (!localRefresh) {
         return undefined;
     }
 
-    if (localJwt.access) {
-        let access = JWT.parse(localJwt.access);
+    if (localAccess) {
+        let access = JWT.parse(localAccess);
         if (!access.expired) {
-            return localJwt.access;
+            return localAccess;
         }
     }
-    if (localJwt.refresh) {
-        let refresh = JWT.parse(localJwt.refresh);
+    if (localRefresh) {
+        let refresh = JWT.parse(localRefresh);
         if (refresh.expired) {
             return undefined;
         }
     }
 
     const refreshData = {
-        refresh: localJwt.refresh
+        refresh: localRefresh
     };
 
     let response: {
@@ -37,18 +40,19 @@ export const refreshToken = async (refreshUrl: string): Promise<string | undefin
             refreshUrl,
             "POST",
             refreshData, {
-                "Authorization": "Bearer " + localJwt.access
+                "Authorization": "Bearer " + localAccess
         });
     }
     catch {
         return undefined;
     }
 
-    const newJwt: JwtTokenPair = {
-        refresh: localJwt.refresh,
-        access: response.data.access
-    }
-    LocalStorage.set("jwt", newJwt);
+    // const newJwt: JwtTokenPair = {
+    //     refresh: localRefresh,
+    //     access: response.data.access
+    // }
+    // LocalStorage.set("jwt", newJwt);
+    Cookies.set("access", response.data.access);
 
-    return newJwt.access
+    return response.data.access;
 };
