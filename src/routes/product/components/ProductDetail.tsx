@@ -61,7 +61,7 @@ const ProductDetail: React.FC<Props> = React.memo((props) => {
         <div
             className={combineClassnames(
                 props.className,
-                "w-full sm:w-10/12 p-3 m-auto bg-white flex max-sm:flex-col"
+                "w-full sm:w-10/12 p-3 m-auto bg-white rounded flex max-sm:flex-col"
             )}
             style={{...props.style}}
         >

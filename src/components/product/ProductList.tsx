@@ -66,7 +66,7 @@ const ProductList: React.FC<Props> = React.memo((props) => {
                         }
                         </For>
 
-                        <div className="mx-auto my-7 col-span-full flex justify-center [&>*]:rounded-sm [&>*]:mx-1 [&>*]:w-[3.6rem] [&>*]:px-1">
+                        <div className="mx-auto my-7 col-span-full flex justify-center [&>*]:rounded-md [&>*]:mx-1 [&>*]:w-[3.6rem] [&>*]:px-1">
                             <Button
                                 onClick={() => setPage(1)}
                             >
