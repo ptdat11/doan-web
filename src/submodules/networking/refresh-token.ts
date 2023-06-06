@@ -1,6 +1,4 @@
-import { JwtTokenPair } from "../../interfaces/api-formats/login";
 import { JWT } from "../jwt/jwt";
-import LocalStorage from "../local-storage/local-storage";
 import { jsonFetch } from "./jsonFetch";
 import Cookies from "js-cookie";
 

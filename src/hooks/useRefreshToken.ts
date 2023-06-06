@@ -1,7 +1,5 @@
 import { useRecoilValue } from "recoil";
-import { JwtTokenPair } from "../interfaces/api-formats/login";
 import { JWT } from "../submodules/jwt/jwt";
-import LocalStorage from "../submodules/local-storage/local-storage";
 import { apiUrlSelector } from "../states/system-states";
 import { jsonFetch } from "../submodules/networking/jsonFetch";
 import { useState } from "react";

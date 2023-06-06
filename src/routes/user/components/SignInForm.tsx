@@ -6,7 +6,6 @@ import { useRecoilValue } from "recoil";
 import { apiUrlSelector } from "../../../states/system-states";
 import { jsonFetch } from "../../../submodules/networking/jsonFetch";
 import { JwtTokenPair } from "../../../interfaces/api-formats/login";
-import LocalStorage from "../../../submodules/local-storage/local-storage";
 import Cookies from "js-cookie";
 
 interface Props extends BaseProps {

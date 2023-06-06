@@ -25,7 +25,7 @@ const OrderHistoryRecord: React.FC<Props> = React.memo((props) => {
             onClick={() => setShowingDetails(false)}
         >
             <div
-                className="sm:max-w-[90%] mx-auto p-3 sm:p-7 flex flex-col rounded-xl bg-white"
+                className="sm:max-w-[90%] max-h-screen mx-auto p-3 sm:p-7 flex flex-col rounded-xl bg-white overflow-y-scroll"
             >
                 <CloseButton 
                     className="ml-auto"
