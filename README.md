@@ -22,4 +22,4 @@ Thiết kế website bán quần áo MILANO
 
 ## Quản lý server:
 
-<https://milanoapi.dipicorp.com>
+<https://milanoapi.dipicorp.com/admin/>
