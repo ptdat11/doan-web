@@ -10,13 +10,13 @@ import Show from "../../flow-control/if/Show";
 import Button from "../../button/Button";
 import useRefreshToken from "../../../hooks/useRefreshToken";
 import DefaultAvatar from "../../avatar/DefaultAvatar";
-import LocalStorage from "../../../submodules/local-storage/local-storage";
 import { useRecoilValue } from "recoil";
 import useFetch from "../../../hooks/useFetch";
 import { categoriesGET } from "../../../interfaces/api-formats/categories";
 import { apiUrlSelector } from "../../../states/system-states";
 import CartIcon from "../../icon/CartIcon";
 import useProfile from "../../../hooks/useProfile";
+import Cookies from "js-cookie";
 
 interface Props extends BaseProps {
     onClickSignIn: React.MouseEventHandler<HTMLButtonElement>,
@@ -36,7 +36,8 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
     const profile = useProfile();
 
     const handleSignOut = () => {
-        LocalStorage.remove("jwt");
+        Cookies.remove("access");
+        Cookies.remove("refresh");
         window.location.reload();
     }
     
