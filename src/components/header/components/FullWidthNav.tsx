@@ -66,7 +66,7 @@ const FullWidthNav: React.FC<Props> = React.memo((props) => {
                 label={
                     <span
                         className={combineClassnames(
-                            location.pathname === "/product" ? "text-yellow-300" : "",
+                            location.pathname === "/search" ? "text-yellow-300" : "",
                         )}
                     >
                         Sản phẩm

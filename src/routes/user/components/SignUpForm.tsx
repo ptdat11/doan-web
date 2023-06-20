@@ -6,7 +6,7 @@ import { useRecoilValue } from "recoil";
 import { apiUrlSelector } from "../../../states/system-states";
 import { jsonFetch } from "../../../submodules/networking/jsonFetch";
 import { InputPromptInfo } from "../../../submodules/prompt/prompt-info";
-import LocalStorage from "../../../submodules/local-storage/local-storage";
+import Cookies from "js-cookie";
 import { JwtTokenPair } from "../../../interfaces/api-formats/login";
 
 interface Props extends BaseProps {
@@ -99,7 +99,8 @@ const SignUpForm: React.FC<Props> = React.memo((props) => {
             password: user.password
         });
 
-        LocalStorage.set("jwt", jwtLogin.data);
+        Cookies.set("access", jwtLogin.data.access as string);
+        Cookies.set("refresh", jwtLogin.data.refresh as string);
         window.location.reload();
     };
 
